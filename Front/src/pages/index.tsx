@@ -1,43 +1,22 @@
-import { useAccount, useConnect, useDisconnect  } from 'wagmi'
+import { useState } from 'react'
 import { Account } from '../components'
 import Editor from '../components/Editor'
-import { Profile } from '../Profile'
+import Header from '../components/Header/Header'
+
+const themes = ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter"]
 
 function Page() {
-  const { isConnected, address } = useAccount()
-  const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
-  const { disconnect } = useDisconnect()
- 
-  console.log(isConnected)
-  console.log(connectors)
+    const [theme, setTheme] = useState(0)
+    const switchTheme: () => void = () => {setTheme((theme + 1)%themes.length)}
 
+    return (
+        <div data-theme={themes[theme]} className='w-full h-full'>
+            <Header switchTheme={switchTheme} theme={themes[theme]} />
 
-   return (
-    <>
-        <h1>address : {address}</h1>
-        {isConnected ? 'Connecté' : 'Déconnecté'}
-
-        {connectors.map((connector) => (
-            <button
-                disabled={isConnected}
-                key={connector.id}
-                onClick={() => connect({ connector })}
-            >
-                {connector.name}
-                {!connector.ready && ' (unsupported)'}
-                {isLoading &&
-                    connector.id === pendingConnector?.id &&
-                    ' (connecting)'}
-            </button>
-        ))}
- 
-        {error && <div>{error.message}</div>}
-        <button onClick={() => disconnect()} disabled={!isConnected} >Disconnect</button>
-        <Profile />
-        <Account/>
-        <Editor />
-    </>
-  )
+            <Account />
+            <Editor />
+        </div>
+    )
 }
 
 export default Page

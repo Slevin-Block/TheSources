@@ -1,9 +1,13 @@
-import {useEffect, useState} from 'react'
-import { useAccount, useNetwork, useSignMessage } from 'wagmi'
+import { useEffect, useState } from 'react'
+import { useAccount, useDisconnect, useNetwork, useSignMessage } from 'wagmi'
 import { SiweMessage } from 'siwe'
+import { useRecoilState } from 'recoil'
+import { User } from '../store/User'
 
-function SignInButton({ onSuccess, onError, }: { onSuccess: (args: { address: string }) => void
-                                                 onError: (args: { error: Error }) => void }) {
+function SignInButton({ onSuccess, onError, }: {
+    onSuccess: (args: { address: string }) => void
+    onError: (args: { error: Error }) => void
+}) {
     const [state, setState] = useState<{
         loading?: boolean
         nonce?: string
@@ -68,15 +72,16 @@ function SignInButton({ onSuccess, onError, }: { onSuccess: (args: { address: st
     }
 
     return (
-        <button disabled={!state.nonce || state.loading} onClick={signIn}>
+        <button disabled={!state.nonce || state.loading} onClick={signIn} className="btn btn-primary" >
             Sign-In with Ethereum
         </button>
     )
 }
 
-export function Profile() {
-    const { isConnected } = useAccount()
-
+export function Registration() {
+    const [user, setUser] = useRecoilState(User)
+    
+    const { disconnect } = useDisconnect()
     const [state, setState] = useState<{
         address?: string
         error?: Error
@@ -100,32 +105,41 @@ export function Profile() {
         return () => window.removeEventListener('focus', handler)
     }, [])
 
-    if (isConnected) {
-        return (
-            <div>
-                {/* Account content goes here */}
+    useEffect(()=>{
+        const isRegistred = !!state.address
+        if (user.isRegistred && !isRegistred){
+            disconnect()
+        }else if (isRegistred){
+            setUser({...user, isRegistred})
+        }
+    }, [state.address])
 
-                {state.address ? (
-                    <div>
-                        <div>Signed in as {state.address}</div>
-                        <button
-                            onClick={async () => {
-                                await fetch('/api/logout')
-                                setState({})
-                            }}
-                        >
-                            Sign Out
-                        </button>
-                    </div>
-                ) : (
-                    <SignInButton
-                        onSuccess={({ address }) => setState((x) => ({ ...x, address }))}
-                        onError={({ error }) => setState((x) => ({ ...x, error }))}
-                    />
-                )}
-            </div>
-        )
+
+
+    if(user.isConnected){
+    return (
+        <div>
+            {/* Account content goes here */}
+
+            {state.address ? (
+                <div>
+                    <button className="btn btn-primary"
+                        onClick={async () => {
+                            await fetch('/api/logout')
+                            setState({})
+                        }}
+                    >
+                        Sign Out
+                    </button>
+                </div>
+            ) : (
+                <SignInButton
+                    onSuccess={({ address }) => setState((x) => ({ ...x, address }))}
+                    onError={({ error }) => setState((x) => ({ ...x, error }))}
+                />
+            )}
+        </div>
+    )}else{
+        return <></>
     }
-
-    return <div><p>Coucou</p></div>
 }
