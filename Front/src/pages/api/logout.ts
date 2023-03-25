@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ironOptions } from '../../configuration/IronOptions'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+    console.log("Logout ...")
     const { method } = req
     switch (method) {
         case 'GET':

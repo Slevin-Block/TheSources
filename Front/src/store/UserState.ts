@@ -13,7 +13,7 @@ type User = {
 };
 
 
-export const User= atom<User>({
-    key: 'User',
+export const UserState= atom<User>({
+    key: 'UserState',
     default: init,
 });

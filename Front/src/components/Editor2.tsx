@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
+import '@uiw/react-markdown-preview/esm/styles/markdown.css'
 import MDEditor, { MDEditorProps } from '@uiw/react-md-editor';
-
 
 
 

@@ -17,6 +17,7 @@ const handler = async (req: NextApiRequest & {session : Session}, res: NextApiRe
             await req.session.save()
             res.setHeader('Content-Type', 'text/plain')
             res.send(req.session.nonce)
+            console.log("SESSION CREATE : ", req.session.nonce)
             break
         default:
             res.setHeader('Allow', ['GET'])

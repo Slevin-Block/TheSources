@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Account } from '../components'
 import Editor from '../components/Editor'
 import Header from '../components/Header/Header'
 
@@ -12,8 +11,6 @@ function Page() {
     return (
         <div data-theme={themes[theme]} className='w-full h-full'>
             <Header switchTheme={switchTheme} theme={themes[theme]} />
-
-            <Account />
             <Editor />
         </div>
     )

@@ -1,3 +1,4 @@
 my-app/
-markdown
+markdown/
+archives/
 ./**/.env

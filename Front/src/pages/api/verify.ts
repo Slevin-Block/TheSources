@@ -18,13 +18,18 @@ const handler = async (req: NextApiRequest & { session: Session }, res: NextApiR
                 const siweMessage = new SiweMessage(message)
                 const fields = await siweMessage.validate(signature)
 
-                if (fields.nonce !== req.session.nonce)
+                console.log("Verify ...", req.session.nonce, fields.nonce, fields.nonce !== req.session.nonce)
+                if (fields.nonce !== req.session.nonce){
+                    console.log("Verifying error")
                     return res.status(422).json({ message: 'Invalid nonce.' })
+                }
                 // @ts-ignore
                 req.session.siwe = fields
                 await req.session.save()
                 res.json({ ok: true })
+                console.log("Verifying successfull")
             } catch (_error) {
+                console.log(_error)
                 res.json({ ok: false })
             }
             break

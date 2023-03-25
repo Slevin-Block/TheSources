@@ -2,9 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+    margin : 0;
+    padding : 0;
+}
 
 body, #__next{
     width : 100vw;
     height :100vh;
 }
 
+h1 {
+    font-size : 4rem;
+}
+h2 {
+    font-size : 2rem;
+
+}
+
+tr,tr, td {
+    border : 1px solid black;
+}
+
+p {
+    padding : 1rem 0;
+}
+
+.Metamask, .WalletConnect{
+    width : 48px;
+    height : 48px;
+    background-position: center;
+    background-size: 70%;
+    background-repeat: no-repeat;
+    paddin : 10px;
+}
+
+.Metamask{
+    background-image : url("./img/metamask.png");
+}
+
+.WalletConnect{
+    background-image : url("./img/walletConnect.png");
+}
+
+/* .loader{
+    background-image : url("./img/loader.svg");
+    transform-origin: center;
+    animation : rotation 3s;
+    animation-timing-function: steps(8, end);
+}
+
+@keyframes rotation {
+    0% { transform : rotation(0); }
+    12% { transform : rotation(45deg); }
+    25% { transform : rotation(90deg); }
+    37% { transform : rotation(135deg); }
+    50% { transform : rotation(180deg); }
+    63% { transform : rotation(225deg); }
+    75% { transform : rotation(270deg); }
+    87% { transform : rotation(315deg); }
+    100% : { transform : rotation(1turn); }
+} */
+
+/* .loader {
+    width : 48px;
+    height : 48px;
+    background-position: center;
+    background-size: 70%;
+    background-image : url("./img/loader.svg");
+  background-repeat: no-repeat;
+  animation-name: spin;
+  animation-duration: 2s;
+  animation-timing-function: steps(8, end);
+  animation-iteration-count: infinite;
+} */
+
+
+.btn-icon{
+  width: 48px;
+  height: 48px;
+}
+.loader {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.spinner {
+  background-position: center;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-image: url("./img/loader.svg");
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation-name: spin;
+  animation-duration: 1s;
+  animation-timing-function: steps(8, end);
+  animation-iteration-count: infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
