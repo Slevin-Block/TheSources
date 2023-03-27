@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-const init = {
+export const initConnection = {
     address : undefined,
     isConnected : false,
     isRegistred : false, 
@@ -15,5 +15,5 @@ type Connection = {
 
 export const ConnectionState= atom<Connection>({
     key: 'ConnectionState',
-    default: init,
+    default: initConnection,
 });

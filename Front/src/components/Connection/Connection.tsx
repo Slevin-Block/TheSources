@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { useAccount, useConnect, useDisconnect, useNetwork, useSignMessage } from 'wagmi'
 import { useRecoilState } from 'recoil'
-import { ConnectionState } from './ConnectionState'
+import { ConnectionState, initConnection } from './ConnectionState'
 import { useSignIn } from './useSignIn'
 export default function Connection() {
 
@@ -11,7 +11,7 @@ export default function Connection() {
     const { disconnect } = useDisconnect()
     const { isConnected, address } = useAccount()
     const { signIn, isPending } = useSignIn()
-    const [onStart, setOnStart] = useState(true)
+    const [ onStart, setOnStart] = useState(true)
 
     // Search activ session
     useEffect(() => {
@@ -37,28 +37,26 @@ export default function Connection() {
     // Search connection change
     useEffect(() => {
         if (!onStart){
-            (async () => {
-                let tempRegistred = false
-                if (isConnected && !connection.isRegistred) {
+            if (isConnected && !connection.isRegistred) {
+                (async () => {
                     const res = await signIn()
-                    if (res?.ok) {
-                        tempRegistred = true
-                    } else {
-                        console.log(res)
-                        await fetch('/api/logout')
+                    if (res?.ok) setConnection({ ...connection, address, isConnected, isRegistred: true })
+                    else {
                         disconnect()
+                        setConnection(initConnection)
                     }
-                }
-                setConnection({ ...connection, address, isConnected, isRegistred: tempRegistred })
-            })()
+                })()
+            }
+
+            if (!isConnected) setConnection({ address, isConnected, isRegistred: false })
         }
-    }, [isConnected, onStart])
+    }, [isConnected])
 
     return (
         <div>
             {!connection.isConnected ? 
                 (connectors
-                 .filter(connector => (!!pendingConnector?.id && !error) ? pendingConnector?.id === connector.id : true)
+                 .filter(connector => (isLoading || isPending) ? pendingConnector?.id === connector.id : true)
                  .map((connector) => (
                     <button className={`btn btn-primary ${connector.name === 'MetaMask' ? 'Metamask' : ''}${connector.name === 'WalletConnect' ? 'WalletConnect' : ''} ${((isLoading &&
                         connector.id === pendingConnector?.id) || isPending) &&
@@ -75,8 +73,8 @@ export default function Connection() {
             :
                 <button
                     onClick={async () => {
-                        await fetch('/api/logout')
                         disconnect()
+                        await fetch('/api/logout')
                     }}
                     className="btn btn-primary">
                     Disconnect

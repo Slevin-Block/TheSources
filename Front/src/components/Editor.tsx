@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
+import { useForm } from "react-hook-form";
+import { Button, FormControl, FormLabel, Input, Textarea } from "@chakra-ui/react";
 
 const markdown = `A paragraph with *emphasis* and **strong importance**.
 
@@ -26,53 +27,99 @@ A table:
 
 
 `;
+type FormData = {
+    title: string;
+    article: string;
+    author?: string;
+    quantity: number;
+};
 
 const Editor = () => {
     const [show, setShow] = useState(false);
-    const [value, setValue] = useState(markdown);
+    const [article, setArticle] = useState(markdown);
+    const { register, setValue, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
+        defaultValues: {
+            title: 'Mon super titre',
+            article: 'Mon article de folie',
+            author: 'Moi, moi et moi',
+            quantity: 4,
+        }
+    });
 
 
-    const handleInputChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
-        setValue(e.target.value);
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setArticle(e.target.value);
     };
 
-    const sendData = async () => {
+    const onSubmit: (data: FormData) => Promise<void> = (data) => {
+        return new Promise((resolve, reject) => {
+            const form = new FormData();
+            const bodyData = {
+                title: data.title,
+                article: data.article,
+                author: data.author,
+                quantity: data.quantity
+            };
+            const bodyJson = JSON.stringify(bodyData);
+            form.append("data", bodyJson)
+            fetch('/api/sendToIPFS', { method: "POST", headers : { 'Content-Type' : 'application/json'}, body: bodyJson })
+                .then(res => console.log(res))
+                .then(() => resolve())
+                .catch(err => reject(err))
+        })
+    };
+
+    /* const form = new FormData();
+    form.append("data", data.article)
+    console.log(form)
+    const res = await fetch('/api/sendToIPFS', { method: "POST", body: form })
+    console.log(res)
+    return true; */
+
+
+    /* const sendData = async () => {
         const form = new FormData();
-        form.append("data", value)
+        form.append("data", data)
         console.log(form)
         const res = await fetch('/api/sendToIPFS', {method : "POST", body : form})
         console.log(res)
-    }
+    } */
 
     return (
         <>
-            <div className=" w-3/4 border border-slate-900 py-8 px-8">
-                <button
-                    className="cursor-pointer relative text-blue-500 font-semibold text-md"
-                    onClick={() => {
-                        setShow(!show);
-                    }}
-                >
-                    {show ? "Edit" : "Preview"}
-                </button>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <FormControl >
+                    <FormLabel>Title of your article</FormLabel>
+                    <Input {...register("title")} placeholder='Title' />
+                    <FormLabel>Your article in markdown</FormLabel>
+                    <Textarea {...register("article")} placeholder='Your article, type in markdown' />
+                    <FormLabel>Author</FormLabel>
+                    <Input {...register("author")} placeholder='your name' />
+                    <FormLabel>Quantity</FormLabel>
+                    <Input {...register("quantity")} placeholder='mint quantity' />
 
-                {/* text area to type markdown */}
+                </FormControl>
+                <Button mt={4} colorScheme='teal' isLoading={isSubmitting} type='submit'>Button</Button>
+            </form>
+
+            {/* <div className="">
+                <input />
                 <textarea
-                    className=" bg-slate-900 fullheight w-full relative outline-none text-white border-0 pt-6"
+                    className=""
                     placeholder="Write your markdown here"
                     value={value}
                     onChange={handleInputChange}
                 />
 
 
-                {/* preview window */}
-                <div className="bg-slate-900 h-full w-full text-white editor">
+
+                <div className="">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {value}
                     </ReactMarkdown>
                 </div>
             </div>
-            <button onClick={sendData} >Send</button>
+            <button onClick={sendData} >Send</button> */}
         </>
     );
 };

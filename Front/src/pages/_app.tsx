@@ -8,7 +8,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { client } from '../components/Connection/wagmi'
 import { RecoilRoot } from 'recoil';
 import { theme } from '../styles/theme';
-
+import '../store/configRecoil';
 
 
 
