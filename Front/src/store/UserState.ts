@@ -1,4 +1,5 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
+import { ConnectionState } from "../components/Connection/ConnectionState";
 
 const init = {
     address : undefined,
@@ -9,11 +10,16 @@ const init = {
 type User = {
     address : string | undefined,
     isConnected : boolean,
-    isRegistred : boolean,
 };
 
 
-export const UserState= atom<User>({
+export const UserState= selector<User>({
     key: 'UserState',
-    default: init,
+    get : ({get}) => {
+        const connection = get(ConnectionState)
+        return {
+            address : connection?.address,
+            isConnected : connection?.isConnected && connection?.isRegistred
+        }
+    }
 });

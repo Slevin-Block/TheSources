@@ -1,6 +1,6 @@
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ironOptions } from '../../configuration/IronOptions'
+import { ironOptions } from '../../components/Connection/IronOptions'
 import { Readable } from 'stream';
 import pinataSDK, { PinataPinOptions } from '@pinata/sdk'
 

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 
 import { useAccount, useConnect, useDisconnect, useNetwork, useSignMessage } from 'wagmi'
 import { useRecoilState } from 'recoil'
-import { UserState } from '../store/UserState'
-import { useSignIn } from '../configuration/useSignIn'
+import { ConnectionState } from './ConnectionState'
+import { useSignIn } from './useSignIn'
 export default function Connection() {
 
-    const [user, setUser] = useRecoilState(UserState)
+    const [connection, setConnection] = useRecoilState(ConnectionState)
     const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
     const { disconnect } = useDisconnect()
     const { isConnected, address } = useAccount()
@@ -20,7 +20,7 @@ export default function Connection() {
                 const res = await fetch('/api/me')
                 const json = await res.json()
                 const isRegistred = !!json.address
-                isRegistred && setUser((user) => ({ ...user, address: json.address, isRegistred, isConnected: true }))
+                isRegistred && setConnection((connection) => ({ ...connection, address: json.address, isRegistred, isConnected: true }))
                 setOnStart(false)
             } catch (err) {
                 console.log("Error : ", err)
@@ -39,7 +39,7 @@ export default function Connection() {
         if (!onStart){
             (async () => {
                 let tempRegistred = false
-                if (isConnected && !user.isRegistred) {
+                if (isConnected && !connection.isRegistred) {
                     const res = await signIn()
                     if (res?.ok) {
                         tempRegistred = true
@@ -49,14 +49,14 @@ export default function Connection() {
                         disconnect()
                     }
                 }
-                setUser({ ...user, address, isConnected, isRegistred: tempRegistred })
+                setConnection({ ...connection, address, isConnected, isRegistred: tempRegistred })
             })()
         }
     }, [isConnected, onStart])
 
     return (
         <div>
-            {!user.isConnected ? 
+            {!connection.isConnected ? 
                 (connectors
                  .filter(connector => (!!pendingConnector?.id && !error) ? pendingConnector?.id === connector.id : true)
                  .map((connector) => (

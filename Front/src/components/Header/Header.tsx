@@ -1,20 +1,20 @@
 import React from 'react'
 import styles from 'Header.module.css'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import { UserState } from '../../store/UserState'
 import { minifyStr } from '../../utils/minifyAddr'
 
-import Connection from '../Connection'
+import Connection from '../Connection/Connection'
 
-export default function Header({switchTheme, theme} : {switchTheme : ()=> void, theme : string}) {
+export default function Header() {
     const user = useRecoilValue(UserState)
     return (
-        <div className='flex flex-row bg-base-100 w-screen h-1/6 gap-28'>
-            <button className="btn btn-primary" onClick={switchTheme} >{theme}</button>
+        <div>
+            
             <div>
                 address : {user.address ? minifyStr(user.address) : ''}
             </div>
-            {/* {user.isConnected ? 'Connecté' : 'Déconnecté'} */}
+            {user.isConnected ? 'Connecté' : 'Déconnecté'}
             <div>
                 <Connection />
             </div>

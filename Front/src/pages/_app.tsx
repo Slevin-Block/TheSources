@@ -3,9 +3,14 @@ import type { AppProps } from 'next/app'
 import NextHead from 'next/head'
 import * as React from 'react'
 import { WagmiConfig } from 'wagmi'
+import { ChakraProvider } from '@chakra-ui/react'
 
-import { client } from '../configuration/wagmi'
+import { client } from '../components/Connection/wagmi'
 import { RecoilRoot } from 'recoil';
+import { theme } from '../styles/theme';
+
+
+
 
 function App({ Component, pageProps }: AppProps) {
     const [mounted, setMounted] = React.useState(false)
@@ -13,11 +18,13 @@ function App({ Component, pageProps }: AppProps) {
     return (
         <RecoilRoot>
             <WagmiConfig client={client}>
-                <NextHead>
-                    <title>The Source</title>
-                </NextHead>
+                <ChakraProvider theme={theme}>
+                    <NextHead>
+                        <title>The Source</title>
+                    </NextHead>
 
-                {mounted && <Component {...pageProps} />}
+                    {mounted && <Component {...pageProps} />}
+                </ChakraProvider>
             </WagmiConfig>
         </RecoilRoot>
     )
