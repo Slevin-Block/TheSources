@@ -22,14 +22,16 @@ export default function CreateArticle() {
     // const body = addBoundary(formData, boundary)
     // console.log(body)
 
-    const handleClick = () => {
+    const handleClick = async () => {
         const title = titleRef.current?.value
         const description = descriptionRef.current?.value
         const author = authorRef.current?.value
 
         if (cover && article && title && author) {
+            const myCover = cover[0]
+            const myArticle = article[0]
             const metadata = {
-                name: title,
+                name: titleRef.current?.value,
                 description,
                 attributes: [
                     {
@@ -43,22 +45,15 @@ export default function CreateArticle() {
                 ]
             }
             
-            //const boundary = "----WebKitFormBoundary" + Math.random().toString().substring(2);
-            const headers = { 'Content-Type': `multipart/form-data`} //; boundary=${boundary}` };
-            const folder = title.replace(" ", '')
-            const metadataBlob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
             const formData = new FormData();
-            formData.append('file', cover[0],       `cover.${cover[0].name.split('.').at(1)}`);
-            formData.append('file', article[0],     `article.${article[0].name.split('.').at(1)}`);
-            formData.append('file', metadataBlob,   `metadata.json`);
-            //const body = addBoundary(formData, boundary)
-            try {
-                fetch('/api/uploadToIPFS',{ method: "POST", headers, body : formData }
-                )
-                    .then(res => res.json())
-                    .then(data => console.log(data))
-                    .catch(err => console.log(err))
-            } catch (err) { console.log(err) }
+            const myMetadata = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
+            console.log(myCover, myArticle, myMetadata)
+            formData.append('file', myCover,      `test/cover.${myCover.name.split('.').at(1)}`);
+            formData.append('file', myArticle,    `test/article.${myArticle.name.split('.').at(1)}`);
+            formData.append('file', myMetadata, `test/metadata.json`);
+            const response = await fetch('/api/uploadToIPFS',{ method: "POST", body : formData })
+            const body = await response.json() as { status: 'ok' | 'fail', message: string };
+            console.log('Reponse : ',body.message)
         } else { console.log("Error, il manque des éléments") }
     }
 
