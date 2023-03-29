@@ -1,47 +1,84 @@
-// Import the NFTStorage class and File constructor from the 'nft.storage' package
-import { NFTStorage, File } from 'nft.storage'
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { promises as fs } from "fs";
+import ffs from 'fs-extra';
+import path from "path";
+import formidable, { File } from 'formidable';
+import pinataSDK from '@pinata/sdk'
+import { withIronSessionApiRoute } from 'iron-session/next'
+import { ironOptions } from '../../components/atoms/Connection/IronOptions';
 
-// The 'mime' npm package helps us set the correct file type on our File objects
-import mime from 'mime'
+export const config = {
+    api: {
+        bodyParser: false,
+    }
+};
 
-// The 'fs' builtin module on Node.js provides access to the file system
-import fs from 'fs'
-
-// The 'path' module provides helpers for manipulating filesystem paths
-import path from 'path'
-
-// Paste your NFT.Storage API key into the quotes:
-const NFT_STORAGE_KEY = process.env.NFT_STORAGE_KEY
-
-async function storeNFT(imagePath, name, description) {
-    // load the file from disk
-    const image = await fileFromPath(imagePath)
-
-    // create a new NFTStorage client using our API key
-    const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY })
-
-    // call client.store, passing in the image & metadata
-    return nftstorage.store({
-        image,
-        name,
-        description,
-    })
+interface Session {
+    nonce?: string;
+    siwe?: string;
 }
 
-async function fileFromPath(filePath) {
-    const content = await fs.promises.readFile(filePath)
-    const type = mime.getType(filePath)
-    return new File([content], path.basename(filePath), { type })
-}
+type ProcessedFiles = Array<[string, File]>;
 
-async function main() {
-    const args = process.argv.slice(2)
-    if (args.length !== 3) {
-        console.error(`usage: ${process.argv[0]} ${process.argv[1]} <image-path> <name> <description>`)
-        process.exit(1)
+async function handler(req: NextApiRequest & { session: Session }, res: NextApiResponse) {
+    const timestamp = Date.now()
+    console.log(timestamp)
+    const pinata = new pinataSDK(process.env.PINATA_KEY, process.env.PINATA_SECRET);
+    let status = 200,
+        resultBody = { status: 'ok', message: 'Files were uploaded successfully' };
+    const tempDir = path.join(process.cwd(), 'temp');
+    console.log(tempDir)
+    await ffs.ensureDir(tempDir, { mode: 0o777 });
+    /* Get files using formidable */
+    const files = await new Promise<ProcessedFiles | undefined>((resolve, reject) => {
+        const form = new formidable.IncomingForm({
+            uploadDir: tempDir,
+        });
+        const files: ProcessedFiles = [];
+        form.on('file', function (field, file) {
+            files.push([field, file]);
+        })
+        form.on('end', () => resolve(files));
+        form.on('error', err => reject(err));
+        form.parse(req, () => {
+            //
+        });
+    }).catch(e => {
+        console.log(e);
+        status = 500;
+        resultBody = {
+            status: 'fail', message: 'Upload error'
+        }
+    });
+
+    if (files?.length) {
+
+        /* Create directory for uploads */
+        const targetPath = path.join(process.cwd(), `/uploads/${timestamp}/`);
+        try {
+            await fs.access(targetPath);
+        } catch (e) {
+            await fs.mkdir(targetPath);
+        }
+
+        /* Move uploaded files to directory */
+        for (const file of files) {
+            const tempPath = file[1].filepath;
+            console.log(tempPath)
+            const targetFilePath = targetPath + file[1].originalFilename
+            await fs.copyFile(tempPath, targetFilePath);
+            await fs.chmod(targetFilePath, 0o777); // Ajouter les permissions complètes pour tous les utilisateurs
+            await fs.unlink(tempPath); // Supprimer le fichier original
+        }
+        console.log('TEST')
+        pinata.pinFromFS(targetPath)
+            .then(res => console.log(res))
+            .then(() => fs.rmdir(targetPath, { recursive: true }))
+
+
     }
 
-    const [imagePath, name, description] = args
-    const result = await storeNFT(imagePath, name, description)
-    console.log(result)
+    res.status(status).json(resultBody);
 }
+
+export default withIronSessionApiRoute(handler, ironOptions)

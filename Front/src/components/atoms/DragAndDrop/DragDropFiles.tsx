@@ -1,4 +1,5 @@
 import { useState, useRef, MutableRefObject, FC, Dispatch  } from "react";
+import { minifyStr } from "../../../utils/minifyStr";
 import { FileImport, Validate, Cancel } from "../svgs";
 import styles from "./DragDropFiles.module.css"
 
@@ -22,7 +23,7 @@ const DragDropFiles: FC<Props> = ({files, setFiles}) => {
     if (files) return (
         <>
             <div className={styles.uploads}>
-                <p>{Array.from(files)[0].name}</p>
+                <p>{minifyStr(Array.from(files)[0].name)}</p>
                 <div className="actions">
                     <button onClick={() => setFiles(null)}><Cancel className={`${styles.iconButton} ${styles.cancel}`}/></button>
                     {/* <button onClick={handleUpload}><Validate className={`${styles.iconButton} ${styles.validate}`}/></button> */}

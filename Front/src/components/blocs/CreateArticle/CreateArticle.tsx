@@ -52,7 +52,7 @@ export default function CreateArticle() {
             formData.append('file', myCover,      `test/cover.${myCover.name.split('.').at(1)}`);
             formData.append('file', myArticle,    `test/article.${myArticle.name.split('.').at(1)}`);
             formData.append('file', myMetadata, `test/metadata.json`);
-            const response = await fetch('/api/uploadToIPFS',{ method: "POST", body : formData })
+            const response = await fetch('/api/upload',{ method: "POST", body : formData })
             const body = await response.json() as { status: 'ok' | 'fail', message: string };
             console.log('Reponse : ',body.message)
         } else { console.log("Error, il manque des éléments") }
@@ -100,25 +100,4 @@ export default function CreateArticle() {
             </Flex>
         </>
     )
-}
-
-
-function addBoundary(formData: FormData, boundary: string) {
-    let requestBody = '';
-    for (let pair of formData.entries()) {
-        const [name, value] = pair;
-        if (typeof value === 'string') {
-            requestBody += `--${boundary}\r\n`;
-            requestBody += `Content-Disposition: form-data; name="${name}"\r\n\r\n`;
-            requestBody += `${value}\r\n`;
-        } else {
-            requestBody += `--${boundary}\r\n`;
-            requestBody += `Content-Disposition: form-data; name="${name}"; filename="${value.name}"\r\n`;
-            requestBody += `Content-Type: ${value.type}\r\n\r\n`;
-            requestBody += `${value.arrayBuffer()}\r\n`;
-        }
-    }
-    requestBody += `--${boundary}--\r\n`;
-    console.log(requestBody)
-    return requestBody
 }

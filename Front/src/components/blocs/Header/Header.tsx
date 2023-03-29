@@ -2,7 +2,7 @@ import React from 'react'
 import styles from 'Header.module.css'
 import { useRecoilValue } from 'recoil'
 import { UserState } from '../../../store/UserState'
-import { minifyStr } from '../../../utils/minifyAddr'
+import { minifyStr } from '../../../utils/minifyStr'
 
 import Connection from '../../atoms/Connection/Connection'
 
