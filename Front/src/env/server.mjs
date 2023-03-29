@@ -1,5 +1,4 @@
-module.exports = {
-    env: {
+export const env = {
         RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED:false,
 
         // IPFS FILE SYSTEM
@@ -10,5 +9,4 @@ module.exports = {
         DBURL: 'usertest:T9cP5FMz0EHzwsrl@slevincluster.k9jzmyl.mongodb.net/task_management',
         MYSECRET: 'Ax$12+1SsEr&',
         DBNAME: 'COOPALIM-Task_Management',
-    },
-}
+    }

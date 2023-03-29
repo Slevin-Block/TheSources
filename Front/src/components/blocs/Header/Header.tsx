@@ -1,16 +1,15 @@
 import React from 'react'
 import styles from 'Header.module.css'
 import { useRecoilValue } from 'recoil'
-import { UserState } from '../../store/UserState'
-import { minifyStr } from '../../utils/minifyAddr'
+import { UserState } from '../../../store/UserState'
+import { minifyStr } from '../../../utils/minifyAddr'
 
-import Connection from '../Connection/Connection'
+import Connection from '../../atoms/Connection/Connection'
 
 export default function Header() {
     const user = useRecoilValue(UserState)
     return (
-        <div>
-            
+        <>
             <div>
                 address : {user.address ? minifyStr(user.address) : ''}
             </div>
@@ -18,6 +17,6 @@ export default function Header() {
             <div>
                 <Connection />
             </div>
-        </div>
+        </>
     )
 }

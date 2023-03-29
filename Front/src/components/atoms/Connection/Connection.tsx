@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
-
 import { useAccount, useConnect, useDisconnect, useNetwork, useSignMessage } from 'wagmi'
 import { useRecoilState } from 'recoil'
 import { ConnectionState, initConnection } from './ConnectionState'
 import { useSignIn } from './useSignIn'
+import { Box, Button } from '@chakra-ui/react'
+import { MetaMask, WalletConnect } from '../svgs'
+import styles from './Connection.module.css'
+
 export default function Connection() {
 
     const [connection, setConnection] = useRecoilState(ConnectionState)
@@ -37,6 +40,7 @@ export default function Connection() {
     // Search connection change
     useEffect(() => {
         if (!onStart){
+            //console.log('BEFORE', connection, isConnected)
             if (isConnected && !connection.isRegistred) {
                 (async () => {
                     const res = await signIn()
@@ -48,38 +52,41 @@ export default function Connection() {
                 })()
             }
 
-            if (!isConnected) setConnection({ address, isConnected, isRegistred: false })
+            if (!isConnected){
+                setConnection({ address, isConnected, isRegistred: false })
+            }
         }
     }, [isConnected])
 
+    //console.log('CURRENT', connection)
     return (
-        <div>
+        <Box>
             {!connection.isConnected ? 
                 (connectors
                  .filter(connector => (isLoading || isPending) ? pendingConnector?.id === connector.id : true)
                  .map((connector) => (
-                    <button className={`btn btn-primary ${connector.name === 'MetaMask' ? 'Metamask' : ''}${connector.name === 'WalletConnect' ? 'WalletConnect' : ''} ${((isLoading &&
-                        connector.id === pendingConnector?.id) || isPending) &&
-                        'loader'}`}
+                    <Button className={`${((isLoading && connector.id === pendingConnector?.id) || isPending) && 'loader'}`}
                         disabled={isConnected}
                         key={connector.id}
                         onClick={() => connect({ connector })}
                     >
+                        {connector.name === 'MetaMask' && <MetaMask className={styles.iconButton} />}
+                        {connector.name === 'WalletConnect' && <WalletConnect className={styles.iconButton}/>}
                         {((isLoading && connector.id === pendingConnector?.id) || isPending) &&
                             <div className="spinner"></div>}
-                    </button>
+                    </Button>
                 )))
             
             :
-                <button
+                <Button
                     onClick={async () => {
                         disconnect()
                         await fetch('/api/logout')
                     }}
-                    className="btn btn-primary">
+                >
                     Disconnect
-                </button>
+                </Button>
             }
-        </div>
+        </Box>
     )
 }

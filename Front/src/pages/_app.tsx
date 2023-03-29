@@ -5,10 +5,10 @@ import * as React from 'react'
 import { WagmiConfig } from 'wagmi'
 import { ChakraProvider } from '@chakra-ui/react'
 
-import { client } from '../components/Connection/wagmi'
+import { client } from '../components/atoms/Connection/wagmi'
 import { RecoilRoot } from 'recoil';
-import { theme } from '../styles/theme';
 import '../store/configRecoil';
+import {theme} from '../styles/theme';
 
 
 
@@ -18,7 +18,7 @@ function App({ Component, pageProps }: AppProps) {
     return (
         <RecoilRoot>
             <WagmiConfig client={client}>
-                <ChakraProvider theme={theme}>
+                <ChakraProvider /* theme={theme} */>
                     <NextHead>
                         <title>The Source</title>
                     </NextHead>

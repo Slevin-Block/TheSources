@@ -63,27 +63,12 @@ const Editor = () => {
             const bodyJson = JSON.stringify(bodyData);
             form.append("data", bodyJson)
             fetch('/api/sendToIPFS', { method: "POST", headers : { 'Content-Type' : 'application/json'}, body: bodyJson })
-                .then(res => console.log(res))
+                .then(res => res.json())
+                .then(data => console.log(data) )
                 .then(() => resolve())
                 .catch(err => reject(err))
         })
     };
-
-    /* const form = new FormData();
-    form.append("data", data.article)
-    console.log(form)
-    const res = await fetch('/api/sendToIPFS', { method: "POST", body: form })
-    console.log(res)
-    return true; */
-
-
-    /* const sendData = async () => {
-        const form = new FormData();
-        form.append("data", data)
-        console.log(form)
-        const res = await fetch('/api/sendToIPFS', {method : "POST", body : form})
-        console.log(res)
-    } */
 
     return (
         <>

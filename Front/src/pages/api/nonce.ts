@@ -1,6 +1,6 @@
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ironOptions } from '../../components/Connection/IronOptions'
+import { ironOptions } from '../../components/atoms/Connection/IronOptions'
 
 import { generateNonce } from 'siwe'
 
