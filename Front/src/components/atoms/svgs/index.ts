@@ -1,0 +1,5 @@
+export {default as FileImport} from "./FileImport.svg"
+export {default as Cancel} from "./Cancel.svg"
+export {default as Validate} from "./Validate.svg"
+export {default as MetaMask} from "./MetaMask.svg"
+export {default as WalletConnect} from "./WalletConnect.svg"

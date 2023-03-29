@@ -1,5 +1,5 @@
 import { atom, selector } from "recoil";
-import { ConnectionState } from "../components/Connection/ConnectionState";
+import { ConnectionState } from "../components/atoms/Connection/ConnectionState";
 
 const init = {
     address : undefined,
