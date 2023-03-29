@@ -4,8 +4,9 @@ import { ironOptions } from '../../components/atoms/Connection/IronOptions'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import fs from "fs";
 import FormData from 'form-data';
-import formidable, { File } from 'formidable';
-import axios from 'axios';
+import formidable, {File} from 'formidable';
+import { NFTStorage } from 'nft.storage'
+import got from "got"
 
 interface Session {
     nonce?: string;
@@ -47,8 +48,8 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
         if (metadataFile) {
             //@ts-ignore
             fs.readFile(metadataFile[1].path, 'utf8', (err, data) => {
-                !err && console.log(JSON.parse(data))
                 err && console.log(err)
+                !err && console.log(JSON.parse(data))
             })
         }
 
@@ -57,21 +58,43 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
         for (const file of files) {
             //@ts-ignore
             body.append(file[0], fs.createReadStream(file[1].path), {
-                filepath: 'test/',
+                filepath: '/',
             });
         }
         /* Send request to another server */
         try {
-            const config = {
+            // TRY WITH NFT.STORAGE
+            /* console.log('TEST WITH NFT.STORAGE ...')
+            const client = new NFTStorage({ token: process.env.NFT_STORAGE_KEY || '' })
+            const cid = await client.storeDirectory(files.map(file => file[1]))
+            console.log(cid) */
+
+
+            // TRY WITH PINATA FETCH
+            console.log('TEST WITH PINATA ...')
+            const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
                 method: "POST",
-                maxContentLength: Infinity,
                 headers: { "Authorization": `Bearer ${process.env.PINATA_JWT}` },
                 body,
-            };
-            const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', config)
+            })
+            console.log('AFTER FETCH')
             const data = await response.json();
-            // Do anything you need with response
             console.log(data)
+
+            // TRY WITH PINATA GOT
+            /* const response = await got(`https://api.pinata.cloud/pinning/pinFileToIPFS`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": `multipart/form-data; boundary=${body._boundary}`,
+                    "Authorization": process.env.PINATA_JWT
+                },
+                body
+            })
+                .on('uploadProgress', progress => {
+                    console.log(progress);
+                });
+            console.log(JSON.parse(response.body)); */
+
             return res.status(200).json({ status: 'ok', message: 'Youpi' });
         } catch (err) {
             console.log(err)

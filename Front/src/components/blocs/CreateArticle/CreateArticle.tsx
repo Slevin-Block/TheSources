@@ -46,7 +46,8 @@ export default function CreateArticle() {
             }
             
             const formData = new FormData();
-            const myMetadata = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
+            const myMetadata = new File([blob], 'metadata.json', { type: 'application/json' })
             console.log(myCover, myArticle, myMetadata)
             formData.append('file', myCover,      `test/cover.${myCover.name.split('.').at(1)}`);
             formData.append('file', myArticle,    `test/article.${myArticle.name.split('.').at(1)}`);
