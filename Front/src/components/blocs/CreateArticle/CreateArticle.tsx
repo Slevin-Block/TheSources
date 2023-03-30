@@ -3,8 +3,17 @@ import React, { useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil';
 import { UserState } from '../../../store/UserState';
 import { useToast } from '@chakra-ui/react'
-import { FormDataEncoder } from 'form-data-encoder';
 import DragDropFiles from '../../atoms/DragAndDrop/DragDropFiles'
+
+type MetadataType = {
+    name: string;
+    description: string;
+    image?: string;
+    attributes: {
+        trait_type: string;
+        value: string;
+    }[];
+}
 
 
 export default function CreateArticle() {
@@ -30,7 +39,7 @@ export default function CreateArticle() {
         if (cover && article && title && author) {
             const myCover = cover[0]
             const myArticle = article[0]
-            const metadata = {
+            let metadata = {
                 name: titleRef.current?.value,
                 description,
                 attributes: [
@@ -40,21 +49,53 @@ export default function CreateArticle() {
                     },
                     {
                         trait_type: "Author address",
-                        address: user.address
+                        value: user.address
+                    },
+                    {
+                        trait_type: "Cover",
+                        value: `cover.${myCover.name.split('.').at(1)}`
+                    },
+                    {
+                        trait_type: "Article",
+                        value: `article.${myArticle.name.split('.').at(1)}`
+                    },
+                    {
+                        trait_type: "Metadata",
+                        value: 'metadata.json'
                     },
                 ]
             }
-            
+
             const formData = new FormData();
             const blob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
             const myMetadata = new File([blob], 'metadata.json', { type: 'application/json' })
-            console.log(myCover, myArticle, myMetadata)
-            formData.append('file', myCover,      `test/cover.${myCover.name.split('.').at(1)}`);
-            formData.append('file', myArticle,    `test/article.${myArticle.name.split('.').at(1)}`);
-            formData.append('file', myMetadata, `test/metadata.json`);
-            const response = await fetch('/api/upload',{ method: "POST", body : formData })
-            const body = await response.json() as { status: 'ok' | 'fail', message: string };
-            console.log('Reponse : ',body.message)
+            formData.append('file', myCover, `cover.${myCover.name.split('.').at(1)}`);
+            formData.append('file', myArticle, `article.${myArticle.name.split('.').at(1)}`);
+            formData.append('file', myMetadata, 'metadata.json');
+            const response = await fetch('/api/upload', { method: "POST", body: formData })
+            const body = await response.json() as { status: 'ok' | 'fail', message: string, cid?: string };
+
+            console.log(body)
+            if (body.status = 'ok') {
+                const upgradeMetadata = { ...metadata, image: `${body.cid}/cover.${myCover.name.split('.').at(1)}` }
+                upgradeMetadata.attributes.push({
+                    trait_type: "CID",
+                    value: body.cid
+                })
+                metadata = upgradeMetadata
+
+                // AUTOMATIC UNPINNING
+                setTimeout(() => {
+                    console.log('Try to unpin')
+                    fetch('/api/unpin', { method: "POST", body: JSON.stringify({ cid : body.cid })})
+                    .then(res => res.json())
+                    .then(data => console.log(data))
+                    .catch(err => console.log(err))
+                }, 8000)
+            }
+            console.log(metadata)
+
+
         } else { console.log("Error, il manque des éléments") }
     }
 

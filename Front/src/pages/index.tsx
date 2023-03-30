@@ -1,7 +1,6 @@
 import Editor from '../components/_archives/Editor'
 import Header from '../components/blocs/Header/Header'
 import CreateArticle from '../components/blocs/CreateArticle/CreateArticle'
-import FolderUpload from '../components/blocs/CreateArticle/test'
 import { Box, Flex } from '@chakra-ui/react'
 
 
@@ -14,7 +13,6 @@ function Page() {
             </Flex>
             <Flex align='center' justify='center' w="100%" h="85%">
                 <CreateArticle />
-                {/* <FolderUpload /> */}
             </Flex>
         </Box>
     )
