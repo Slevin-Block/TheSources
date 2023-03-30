@@ -27,9 +27,6 @@ export default function CreateArticle() {
     const priceRef = useRef<HTMLInputElement>(null)
     const toast = useToast()
 
-    // const boundary = '----WebKitFormBoundary' + Math.random().toString(16).substring(2, 16);
-    // const body = addBoundary(formData, boundary)
-    // console.log(body)
 
     const handleClick = async () => {
         const title = titleRef.current?.value
@@ -74,28 +71,24 @@ export default function CreateArticle() {
             formData.append('file', myMetadata, 'metadata.json');
             const response = await fetch('/api/upload', { method: "POST", body: formData })
             const body = await response.json() as { status: 'ok' | 'fail', message: string, cid?: string };
+            const folderCID = body.message.split(' ').at(1)
+            const metadataCID = `https://gateway.pinata.cloud/ipfs/${body.cid}`
+            console.log('Response : ', folderCID, metadataCID)
 
-            console.log(body)
             if (body.status = 'ok') {
-                const upgradeMetadata = { ...metadata, image: `${body.cid}/cover.${myCover.name.split('.').at(1)}` }
-                upgradeMetadata.attributes.push({
-                    trait_type: "CID",
-                    value: body.cid
-                })
-                metadata = upgradeMetadata
-
                 // AUTOMATIC UNPINNING
                 setTimeout(() => {
                     console.log('Try to unpin')
-                    fetch('/api/unpin', { method: "POST", body: JSON.stringify({ cid : body.cid })})
-                    .then(res => res.json())
-                    .then(data => console.log(data))
-                    .catch(err => console.log(err))
+                    fetch('/api/unpin', { method: "POST", body: JSON.stringify({ cid: metadataCID }) })
+                        .then(res => res.json())
+                        .then(data => console.log(data))
+                        .catch(err => console.log(err))
+                    fetch('/api/unpin', { method: "POST", body: JSON.stringify({ cid: folderCID }) })
+                        .then(res => res.json())
+                        .then(data => console.log(data))
+                        .catch(err => console.log(err))
                 }, 3000)
             }
-            console.log(metadata)
-
-
         } else { console.log("Error, il manque des éléments") }
     }
 

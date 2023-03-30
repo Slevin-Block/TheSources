@@ -2,9 +2,10 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import ffs, { promises as fs } from "fs";
 import path from "path";
 import formidable, { File } from 'formidable';
-import pinataSDK from '@pinata/sdk'
+import pinataSDK, { PinataPinOptions } from '@pinata/sdk'
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { ironOptions } from '../../components/atoms/Connection/IronOptions';
+import { string } from 'yup';
 
 export const config = {
     api: {
@@ -20,6 +21,16 @@ interface Session {
 type Response = { status: 'ok' | 'fail', message: string, cid?: string };
 
 type ProcessedFiles = Array<[string, File]>;
+
+type MetadataType = {
+    name?: string;
+    description?: string;
+    image?: string;
+    attributes?: {
+        trait_type: string;
+        value: string;
+    }[];
+}
 
 async function handler(req: NextApiRequest & { session: Session }, res: NextApiResponse) {
     console.log('UPLOAD ...')
@@ -47,7 +58,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
     });
 
     if (files?.length) {
-        let metadata = {}
+        let metadata: MetadataType = {}
         //Create directory for uploads
         const targetPath = path.join(process.cwd(), `/uploads/${timestamp}/`);
         try {
@@ -60,38 +71,71 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
         for (const file of files) {
             const tempPath = file[1].filepath;
             const targetFilePath = targetPath + file[1].originalFilename
-            console.log(file[1].originalFilename)
             if (ffs.existsSync(tempPath)) {
-                ffs.rename(tempPath, targetFilePath, (err) => {
-                    file[1].originalFilename === 'metadata.json' &&
-                        ffs.readFile(targetFilePath, 'utf8', (err, data) => {
-                            if (!err) metadata = JSON.parse(data)
-                            else console.log(err)
-                        })
-                    if (err) console.log(err)
-                })
+                try { await fs.rename(tempPath, targetFilePath) }
+                catch (err) { return res.status(404).send({ status: 'fail', message: 'Error rename' }) }
+                try {
+                    if (file[1].originalFilename === 'metadata.json') {
+                        const result = await fs.readFile(targetFilePath, 'utf8')
+                        metadata = JSON.parse(result)
+                    }
+                } catch (err) { return res.status(404).send({ status: 'fail', message: 'Error read Metadata' }) }
             } else {
                 console.log('Missing file : ', targetFilePath)
             }
         }
 
-        console.log(metadata)
+
+        // Initialization Pinata pinning
+        const pinata = new pinataSDK(process.env.PINATA_KEY, process.env.PINATA_SECRET);
+        const folderOptions: PinataPinOptions = {
+            pinataMetadata: { name: `${metadata.name} - folder` },
+            pinataOptions: { cidVersion: 0 }
+        };
+        const metadataOptions: PinataPinOptions = {
+            pinataMetadata: { name: `${metadata.name} - metadata` },
+            pinataOptions: { cidVersion: 0 }
+        };
 
 
         // Send Folder to Pinata for pinning
-        const pinata = new pinataSDK(process.env.PINATA_KEY, process.env.PINATA_SECRET);
         try {
-            const response = await pinata.pinFromFS(targetPath)
-            resultBody = { ...resultBody, cid: `https://gateway.pinata.cloud/ipfs/${response.IpfsHash}` }
-            cleanUp(files, targetPath)
-            res.status(status).json(resultBody)
+            // Send Folder and get back folder CID
+            const response = await pinata.pinFromFS(targetPath, folderOptions)
+            const folderCID = `https://gateway.pinata.cloud/ipfs/${response.IpfsHash}`
+            resultBody = { ...resultBody, cid: folderCID }
+
+            // Upgrade metadata
+            let coverName: string | undefined = ''
+            if (metadata) coverName = metadata?.attributes?.find(field => field?.trait_type === 'Cover')?.value
+            if (!coverName) return res.status(404).send({ status: 'fail', message: 'Error generate Metadata' })
+            metadata = { ...metadata, image: `${folderCID}/${coverName}` }
+            if (metadata.attributes) {
+                metadata.attributes.push({
+                    trait_type: "CID",
+                    value: folderCID
+                })
+            } else return res.status(404).send({ status: 'fail', message: 'Error read Metadata' })
+
+
+            // Send Metadata and get back NFTCID
+            try{
+                const NFTcid = await pinata.pinJSONToIPFS(metadata, metadataOptions)
+                cleanUp(files, targetPath)
+                console.log('Metadata : ', metadata)
+                console.log('CID : ',NFTcid.IpfsHash);
+                return res.status(status).send({ status: 'ok', message: `successfull ${folderCID}`, cid: NFTcid.IpfsHash })
+            }catch(err){
+                return res.status(500).json({ status : 'fail', message: 'Error pinJSONToIPFS' });
+            }
+
         } catch (err) {
             console.log('ERREUR PINATA : ', err)
             cleanUp(files, targetPath)
             res.status(status).json(resultBody)
         }
     } else {
-        res.status(status).json(resultBody);
+        return res.status(status).send(resultBody);
     }
 
 }
@@ -112,3 +156,4 @@ function cleanUp(files: ProcessedFiles, targetPath: string) {
     }
     fs.rm(targetPath, { recursive: true })
 }
+
