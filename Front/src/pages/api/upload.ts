@@ -24,10 +24,10 @@ type ProcessedFiles = Array<[string, File]>;
 async function handler(req: NextApiRequest & { session: Session }, res: NextApiResponse) {
     console.log('UPLOAD ...')
     const timestamp = Date.now()
-    const pinata = new pinataSDK(process.env.PINATA_KEY, process.env.PINATA_SECRET);
     let status = 200;
     let resultBody: Response = { status: 'ok', message: 'Files were uploaded successfully' };
     const tempDir = path.join(process.cwd(), 'temp');
+
     /* Get files using formidable */
     const files = await new Promise<ProcessedFiles | undefined>((resolve, reject) => {
         const form = new formidable.IncomingForm({ uploadDir: tempDir });
@@ -47,7 +47,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
     });
 
     if (files?.length) {
-        console.log("Start work ...")
+        let metadata = {}
         //Create directory for uploads
         const targetPath = path.join(process.cwd(), `/uploads/${timestamp}/`);
         try {
@@ -56,21 +56,30 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
             await fs.mkdir(targetPath);
         }
 
-        //Move uploaded files to directory
+        //Move uploaded files to directory and store metadata object
         for (const file of files) {
             const tempPath = file[1].filepath;
             const targetFilePath = targetPath + file[1].originalFilename
             console.log(file[1].originalFilename)
             if (ffs.existsSync(tempPath)) {
                 ffs.rename(tempPath, targetFilePath, (err) => {
+                    file[1].originalFilename === 'metadata.json' &&
+                        ffs.readFile(targetFilePath, 'utf8', (err, data) => {
+                            if (!err) metadata = JSON.parse(data)
+                            else console.log(err)
+                        })
                     if (err) console.log(err)
-
                 })
             } else {
                 console.log('Missing file : ', targetFilePath)
             }
         }
-        console.log('TEST : ', targetPath)
+
+        console.log(metadata)
+
+
+        // Send Folder to Pinata for pinning
+        const pinata = new pinataSDK(process.env.PINATA_KEY, process.env.PINATA_SECRET);
         try {
             const response = await pinata.pinFromFS(targetPath)
             resultBody = { ...resultBody, cid: `https://gateway.pinata.cloud/ipfs/${response.IpfsHash}` }

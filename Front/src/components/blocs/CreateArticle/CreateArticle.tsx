@@ -85,13 +85,13 @@ export default function CreateArticle() {
                 metadata = upgradeMetadata
 
                 // AUTOMATIC UNPINNING
-                /* setTimeout(() => {
+                setTimeout(() => {
                     console.log('Try to unpin')
                     fetch('/api/unpin', { method: "POST", body: JSON.stringify({ cid : body.cid })})
                     .then(res => res.json())
                     .then(data => console.log(data))
                     .catch(err => console.log(err))
-                }, 8000) */
+                }, 3000)
             }
             console.log(metadata)
 
