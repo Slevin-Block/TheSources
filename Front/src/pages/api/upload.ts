@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { promises as fs } from "fs";
-import ffs from 'fs-extra';
+import ffs, { promises as fs } from "fs";
 import path from "path";
 import formidable, { File } from 'formidable';
 import pinataSDK from '@pinata/sdk'
@@ -18,31 +17,29 @@ interface Session {
     siwe?: string;
 }
 
+type Response = { status: 'ok' | 'fail', message: string, cid?: string };
+
 type ProcessedFiles = Array<[string, File]>;
 
 async function handler(req: NextApiRequest & { session: Session }, res: NextApiResponse) {
+    console.log('UPLOAD ...')
     const timestamp = Date.now()
     console.log(timestamp)
     const pinata = new pinataSDK(process.env.PINATA_KEY, process.env.PINATA_SECRET);
-    let status = 200,
-        resultBody = { status: 'ok', message: 'Files were uploaded successfully' };
+    let status = 200;
+    let resultBody: Response = { status: 'ok', message: 'Files were uploaded successfully' };
     const tempDir = path.join(process.cwd(), 'temp');
     console.log(tempDir)
-    await ffs.ensureDir(tempDir, { mode: 0o777 });
     /* Get files using formidable */
     const files = await new Promise<ProcessedFiles | undefined>((resolve, reject) => {
-        const form = new formidable.IncomingForm({
-            uploadDir: tempDir,
-        });
+        const form = new formidable.IncomingForm({ uploadDir: tempDir });
         const files: ProcessedFiles = [];
         form.on('file', function (field, file) {
             files.push([field, file]);
         })
         form.on('end', () => resolve(files));
         form.on('error', err => reject(err));
-        form.parse(req, () => {
-            //
-        });
+        form.parse(req, () => { });
     }).catch(e => {
         console.log(e);
         status = 500;
@@ -53,7 +50,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
 
     if (files?.length) {
 
-        /* Create directory for uploads */
+        //Create directory for uploads
         const targetPath = path.join(process.cwd(), `/uploads/${timestamp}/`);
         try {
             await fs.access(targetPath);
@@ -61,24 +58,50 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
             await fs.mkdir(targetPath);
         }
 
-        /* Move uploaded files to directory */
+        //Move uploaded files to directory
         for (const file of files) {
             const tempPath = file[1].filepath;
-            console.log(tempPath)
             const targetFilePath = targetPath + file[1].originalFilename
-            await fs.copyFile(tempPath, targetFilePath);
-            await fs.chmod(targetFilePath, 0o777); // Ajouter les permissions complètes pour tous les utilisateurs
-            await fs.unlink(tempPath); // Supprimer le fichier original
+            console.log(file[1].originalFilename)
+            if (ffs.existsSync(tempPath)) {
+                ffs.rename(tempPath, targetFilePath, (err) => {
+                    if (err) console.log(err)
+
+                })
+            } else {
+                console.log('Missing file : ', targetFilePath)
+            }
         }
-        console.log('TEST')
-        pinata.pinFromFS(targetPath)
-            .then(res => console.log(res))
-            .then(() => fs.rmdir(targetPath, { recursive: true }))
-
-
+        console.log('TEST : ', targetPath)
+        try {
+            const response = await pinata.pinFromFS(targetPath)
+            resultBody = { ...resultBody, cid: `https://gateway.pinata.cloud/ipfs/${response.IpfsHash}` }
+            cleanUp(files, targetPath)
+            res.status(status).json(resultBody)
+        } catch (err) {
+            console.log('ERREUR PINATA : ', err)
+            cleanUp(files, targetPath)
+            res.status(status).json(resultBody)
+        }
+    } else {
+        res.status(status).json(resultBody);
     }
 
-    res.status(status).json(resultBody);
 }
 
 export default withIronSessionApiRoute(handler, ironOptions)
+
+function cleanUp(files: ProcessedFiles, targetPath: string) {
+    /* console.log("CleanUp") */
+    for (const file of files) {
+        const tempPath = file[1].filepath;
+        if (ffs.existsSync(tempPath)) {
+            ffs.rm(tempPath, (err) => {
+                if (err) console.log(err)
+            })
+        }/*  else {
+            console.log('Missing file : ', tempPath)
+        } */
+    }
+    fs.rm(targetPath, { recursive: true })
+}

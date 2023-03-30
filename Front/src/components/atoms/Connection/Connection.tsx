@@ -35,6 +35,7 @@ export default function Connection() {
         // 2. window is focused (in case user logs out of another window)
         window.addEventListener('focus', handler)
         return () => window.removeEventListener('focus', handler)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // Search connection change
@@ -56,6 +57,7 @@ export default function Connection() {
                 setConnection({ address, isConnected, isRegistred: false })
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected])
 
     //console.log('CURRENT', connection)
