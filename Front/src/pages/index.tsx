@@ -1,7 +1,7 @@
 import Editor from '../components/_archives/Editor'
 import Header from '../components/blocs/Header/Header'
 import CreateArticle from '../components/blocs/CreateArticle/CreateArticle'
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Button, Flex } from '@chakra-ui/react'
 
 
 function Page() {

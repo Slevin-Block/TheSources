@@ -23,12 +23,13 @@ type ProcessedFiles = Array<[string, File]>;
 
 async function handler(req: NextApiRequest & { session: Session }, res: NextApiResponse) {
     console.log('UPLOAD ...')
+    console.log(process.env.PINATA_KEY, process.env.PINATA_SECRET)
     const timestamp = Date.now()
     console.log(timestamp)
     const pinata = new pinataSDK(process.env.PINATA_KEY, process.env.PINATA_SECRET);
     let status = 200;
     let resultBody: Response = { status: 'ok', message: 'Files were uploaded successfully' };
-    const tempDir = path.join(process.cwd(), 'temp');
+    const tempDir = path.join(process.cwd(), 'posts');
     console.log(tempDir)
     /* Get files using formidable */
     const files = await new Promise<ProcessedFiles | undefined>((resolve, reject) => {
@@ -92,7 +93,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
 export default withIronSessionApiRoute(handler, ironOptions)
 
 function cleanUp(files: ProcessedFiles, targetPath: string) {
-    /* console.log("CleanUp") */
+
     for (const file of files) {
         const tempPath = file[1].filepath;
         if (ffs.existsSync(tempPath)) {
