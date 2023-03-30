@@ -23,14 +23,11 @@ type ProcessedFiles = Array<[string, File]>;
 
 async function handler(req: NextApiRequest & { session: Session }, res: NextApiResponse) {
     console.log('UPLOAD ...')
-    console.log(process.env.PINATA_KEY, process.env.PINATA_SECRET)
     const timestamp = Date.now()
-    console.log(timestamp)
     const pinata = new pinataSDK(process.env.PINATA_KEY, process.env.PINATA_SECRET);
     let status = 200;
     let resultBody: Response = { status: 'ok', message: 'Files were uploaded successfully' };
-    const tempDir = path.join(process.cwd(), 'posts');
-    console.log(tempDir)
+    const tempDir = path.join(process.cwd(), 'temp');
     /* Get files using formidable */
     const files = await new Promise<ProcessedFiles | undefined>((resolve, reject) => {
         const form = new formidable.IncomingForm({ uploadDir: tempDir });
@@ -50,7 +47,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
     });
 
     if (files?.length) {
-
+        console.log("Start work ...")
         //Create directory for uploads
         const targetPath = path.join(process.cwd(), `/uploads/${timestamp}/`);
         try {
