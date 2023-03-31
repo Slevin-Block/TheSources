@@ -95,7 +95,7 @@ export default function CreateArticle() {
 
     return (
         <>
-            <Flex direction='column' gap='0.5rem' w='30rem' align='center' justify='center' border='1px' borderColor='accent' borderRightRadius="0.4rem" p='1rem' >
+            <Flex direction='column' gap='0.5rem' w='30rem' align='center' justify='center' border='1px' borderColor='accent' borderRightRadius="0.4rem" p='1rem'>
                 <Flex justify='space-around' w="100%">
                     <Box>
                         <Text>Title of your article</Text>

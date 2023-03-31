@@ -28,7 +28,7 @@ if (ALCHEMY_ID) {
 // GLOBALS CONFIGURATIONS
 const config: HardhatUserConfig = {
     solidity: {
-        version: "0.8.18",
+        version: "0.8.19",
         settings: {
             optimizer: {
                 enabled: true,
@@ -41,7 +41,7 @@ const config: HardhatUserConfig = {
         sources: "./contracts",
         tests: "./test",
         cache: "./cache",
-        artifacts: "../Front/src/artifacts"
+        artifacts: ".artifacts"//"../Front/src/artifacts"
     },
     mocha: {
         timeout: 40000
