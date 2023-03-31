@@ -37,11 +37,11 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
     const timestamp = Date.now()
     let status = 200;
     let resultBody: Response = { status: 'ok', message: 'Files were uploaded successfully' };
-    const tempDir = path.join(process.cwd(), 'temp');
+    const tempDir = '/tmp'; //path.join(process.cwd(), 'temp');
 
     /* Get files using formidable */
     const files = await new Promise<ProcessedFiles | undefined>((resolve, reject) => {
-        const form = new formidable.IncomingForm(/* { uploadDir: tempDir } */);
+        const form = new formidable.IncomingForm({ uploadDir: tempDir });
         const files: ProcessedFiles = [];
         form.on('file', function (field, file) {
             files.push([field, file]);
@@ -60,7 +60,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
     if (files?.length) {
         let metadata: MetadataType = {}
         //Create directory for uploads
-        const targetPath = path.join(process.cwd(), `/uploads/${timestamp}/`);
+        const targetPath = `/tmp/uploads/${timestamp}/`;
         try {
             await fs.access(targetPath);
         } catch (e) {
