@@ -61,6 +61,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
         let metadata: MetadataType = {}
         //Create directory for uploads
         const targetPath = `/tmp/uploads/${timestamp}/`;
+        if (!ffs.existsSync(`/tmp/uploads/`)) await fs.mkdir(`/tmp/uploads/`);
         try {
             await fs.access(targetPath);
         } catch (e) {
