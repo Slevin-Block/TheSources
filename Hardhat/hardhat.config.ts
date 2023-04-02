@@ -3,23 +3,27 @@ import "@nomicfoundation/hardhat-toolbox";
 import * as dotenv from 'dotenv'
 
 dotenv.config()
-const { MNEMONIC, GOERLIRPC, INFURA_ID, MUMBAIRPC, ALCHEMY_ID } = process.env
-let network = {}
+const { MNEMONIC, GOERLIRPC, INFURA_ID, MUMBAIRPC, ALCHEMY_ID, MAIN_ACCOUNT, CLIENT_1_ACCOUNT, CLIENT_2_ACCOUNT, CLIENT_3_ACCOUNT, CLIENT_4_ACCOUNT } = process.env
+let networks = {}
+const accounts = [MAIN_ACCOUNT, CLIENT_1_ACCOUNT, CLIENT_2_ACCOUNT, CLIENT_3_ACCOUNT, CLIENT_4_ACCOUNT]
+
 
 // NETWORKS CONFIGURATION
 if (INFURA_ID) {
-    network = {
-        ...network,
+    networks = {
+        ...networks,
         goerli: {
             url: `${GOERLIRPC}${INFURA_ID}`,
+            accounts,
         }
     }
 }
 if (ALCHEMY_ID) {
-    network = {
-        ...network,
+    networks = {
+        ...networks,
         mumbai: {
             url: `${MUMBAIRPC}${ALCHEMY_ID}`,
+            accounts,
         }
     }
 }
@@ -36,7 +40,7 @@ const config: HardhatUserConfig = {
             }
         }
     },
-    networks: network,
+    networks,
     paths: {
         sources: "./contracts",
         tests: "./test",

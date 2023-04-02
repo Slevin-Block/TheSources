@@ -26,6 +26,8 @@ type MetadataType = {
     name?: string;
     description?: string;
     image?: string;
+    seller_fee_basis_points? : number;
+    fee_recipient ? : string;
     attributes?: {
         trait_type: string;
         value: string;
@@ -61,7 +63,13 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
         let metadata: MetadataType = {}
         //Create directory for uploads
         const targetPath = `/tmp/uploads/${timestamp}/`;
-        if (!ffs.existsSync(`/tmp/uploads/`)) await fs.mkdir(`/tmp/uploads/`);
+        if (!ffs.existsSync(`/tmp/uploads/`)){
+            try{
+                await fs.mkdir(`/tmp/uploads/`);
+            }catch(e){
+                console.log(e)
+            }
+        }
         try {
             await fs.access(targetPath);
         } catch (e) {
@@ -106,11 +114,16 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
             const folderCID = `https://gateway.pinata.cloud/ipfs/${response.IpfsHash}`
             resultBody = { ...resultBody, cid: folderCID }
 
-            // Upgrade metadata
+            // Upgrade Article metadata
             let coverName: string | undefined = ''
             if (metadata) coverName = metadata?.attributes?.find(field => field?.trait_type === 'Cover')?.value
             if (!coverName) return res.status(404).send({ status: 'fail', message: 'Error generate Metadata' })
-            metadata = { ...metadata, image: `${folderCID}/${coverName}` }
+            metadata = {
+                ...metadata,
+                image: `${folderCID}/${coverName}`,
+                seller_fee_basis_points : 250, // Le rendre dynamique (appel du smart Contract de la Market place pour définir les royalities)
+                fee_recipient : process.env.ADDRESS_MARKETPLACE,
+            }
             if (metadata.attributes) {
                 metadata.attributes.push({
                     trait_type: "CID",
@@ -119,7 +132,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
             } else return res.status(404).send({ status: 'fail', message: 'Error read Metadata' })
 
 
-            // Send Metadata and get back NFTCID
+            // Send Metadata and get back Article SFT CID
             try{
                 const NFTcid = await pinata.pinJSONToIPFS(metadata, metadataOptions)
                 cleanUp(files, targetPath)
@@ -151,9 +164,9 @@ function cleanUp(files: ProcessedFiles, targetPath: string) {
             ffs.rm(tempPath, (err) => {
                 if (err) console.log(err)
             })
-        }/*  else {
+        } else {
             console.log('Missing file : ', tempPath)
-        } */
+        }
     }
     fs.rm(targetPath, { recursive: true })
 }

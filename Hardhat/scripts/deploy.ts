@@ -1,16 +1,28 @@
 import { ethers } from "hardhat";
+import fs from 'fs'
 
 async function main() {
-    const [owner, otherAccount] = await ethers.getSigners();
-    console.log(otherAccount)
+
+    // INITIALISATION
+    const [owner, ...clients] = await ethers.getSigners();
+    console.log([owner.address, ...clients.map(account => account.address)])
+    
+    // MEMBRE TOKEN DEPLOYEMENT
+    const baseURIMembreToken = "https://gateway.pinata.cloud/ipfs/QmQ41vE6evX9ysRiW3PJzf4UTeV5V6QTYcHCc6EcG3qtKa/"
     const TheSourceMembreToken = await ethers.getContractFactory("TheSourceMembreToken");
     const theSourceMembreToken = await TheSourceMembreToken.deploy();
     await theSourceMembreToken.deployed();
     const membreToken = await ethers.getContractAt("TheSourceMembreToken", theSourceMembreToken.address);
-    console.log(
-        `TheSourceMembreToken has been deployed to address ${membreToken.address}`
-    )
     const address_MemberToken = membreToken.address
+    console.log( `TheSourceMembreToken has been deployed to address ${address_MemberToken}` )
+    await membreToken.setBaseURI(baseURIMembreToken)
+    
+    fs.readdir('./Tokens/json', (err, files) => {
+        if (err) return console.log(err)
+        
+    })
+
+
     let theSourceMarketPlace
     if (address_MemberToken){
         const TheSourceMarketPlace = await ethers.getContractFactory("TheSourceMarketPlace");

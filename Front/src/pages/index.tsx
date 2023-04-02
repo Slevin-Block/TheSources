@@ -1,6 +1,6 @@
 import Editor from '../components/_archives/Editor'
 import Header from '../components/blocs/Header/Header'
-import CreateArticle from '../components/blocs/CreateArticle/CreateArticle'
+import ArticleCreate from '../components/blocs/ArticleCreate/ArticleCreate'
 import { Box, Button, Flex } from '@chakra-ui/react'
 
 
@@ -12,7 +12,7 @@ function Page() {
                 <Header />
             </Flex>
             <Flex align='center' justify='center' w="100%" h="85%">
-                <CreateArticle />
+                <ArticleCreate />
             </Flex>
         </Box>
     )

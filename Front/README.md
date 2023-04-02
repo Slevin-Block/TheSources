@@ -15,3 +15,29 @@ To learn more about [Next.js](https://nextjs.org), [ConnectKit](https://docs.fam
 - [ConnectKit Documentation](https://docs.family.co/connectkit) – learn more about ConnectKit (configuration, theming, advanced usage, etc).
 - [Next.js Documentation](https://nextjs.org/docs) learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+
+
+--------------------------------------------------------------------
+
+transferts <= Liste des events Transfert (from, to, tokenId)
+const myAddress = address
+
+let ownership = {}
+let currentProperties = [];
+transferts.forEach(transfert => {
+    if (currentProperties.length < transfert.id) currentProperties.push(transfert.to)
+    else  currentProperties[transfert.id-1] = transfert.to
+});
+
+// List que de l'address cherchée
+const properties = currentProperties.flatMap((property,index) => property === myAddress ? index+1 : [])
+console.log('Listes des tokens de a : ', properties.length ? properties : null)
+
+// Liste complète des propriétés de chaque possesseur de token
+currentProperties.forEach((property, index) => {
+    if (ownership?.property) ownership.property.push(index+1)
+    else ownership[property] = [index+1]
+})
+
+console.log(`Listes des tokens de a : `, ownership?.a || null)
