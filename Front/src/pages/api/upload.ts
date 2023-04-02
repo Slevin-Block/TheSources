@@ -1,11 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import ffs, { promises as fs } from "fs";
-import path from "path";
 import formidable, { File } from 'formidable';
 import pinataSDK, { PinataPinOptions } from '@pinata/sdk'
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { ironOptions } from '../../components/atoms/Connection/IronOptions';
-import { string } from 'yup';
 
 export const config = {
     api: {

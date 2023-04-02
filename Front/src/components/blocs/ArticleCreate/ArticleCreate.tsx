@@ -32,10 +32,18 @@ export default function ArticleCreate() {
         const title = titleRef.current?.value
         const description = descriptionRef.current?.value
         const author = authorRef.current?.value
+        
 
         if (cover && article && title && author) {
             const myCover = cover[0]
             const myArticle = article[0]
+
+            if (!["jpg", "png", "svg"].includes(myCover.name.split('.')[1])){
+                return console.log("Cover hasn't the good format : ", myCover.name.split('.').at(1))
+            }
+            if (myArticle.name.split('.')[1] !== 'pdf'){
+                return console.log("Article hasn't the good format : ", myArticle.name.split('.').at(1))
+            }
             let metadata = {
                 name: titleRef.current?.value,
                 description,

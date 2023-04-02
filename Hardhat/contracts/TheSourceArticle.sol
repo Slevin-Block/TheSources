@@ -1,19 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-
 /*********************************************************************************************************************
-      _____ _          _____                                     ___________ _____    ___       _   _      _      
-      |_   _| |        /  ___|                                   /  ___|  ___|_   _|  / _ \     | | (_)    | |     
-        | | | |__   ___\ `--.  ___  _   _ _ __ ___ ___   ______  \ `--.| |_    | |   / /_\ \_ __| |_ _  ___| | ___ 
-        | | | '_ \ / _ \`--. \/ _ \| | | | '__/ __/ _ \ |______|  `--. \  _|   | |   |  _  | '__| __| |/ __| |/ _ \
-        | | | | | |  __/\__/ / (_) | |_| | | | (_|  __/          /\__/ / |     | |   | | | | |  | |_| | (__| |  __/
-        \_/ |_| |_|\___\____/ \___/ \__,_|_|  \___\___|          \____/\_|     \_/   \_| |_/_|   \__|_|\___|_|\___|
-
+  _____ _          _____                                     ___________ _____    ___       _   _      _      
+ |_   _| |        /  ___|                                   /  ___|  ___|_   _|  / _ \     | | (_)    | |     
+   | | | |__   ___\ `--.  ___  _   _ _ __ ___ ___   ______  \ `--.| |_    | |   / /_\ \_ __| |_ _  ___| | ___ 
+   | | | '_ \ / _ \`--. \/ _ \| | | | '__/ __/ _ \ |______|  `--. \  _|   | |   |  _  | '__| __| |/ __| |/ _ \
+   | | | | | |  __/\__/ / (_) | |_| | | | (_|  __/          /\__/ / |     | |   | | | | |  | |_| | (__| |  __/
+   \_/ |_| |_|\___\____/ \___/ \__,_|_|  \___\___|          \____/\_|     \_/   \_| |_/_|   \__|_|\___|_|\___|
 
 
 *********************************************************************************************************************/
-
 
 import "../node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC1155/extensions/ERC1155URIStorage.sol";
@@ -123,30 +120,35 @@ contract TheSourceArticle is ERC1155URIStorage, Royalties2, Ownable {
         string calldata _title,
         string calldata _description,
         string calldata _authorName,
-        uint256 _supply,
+        uint256 _totalSupply,
         uint256 _priceInFinney,
         string memory URI
     ) public onlyOwner returns (uint256) {
         _articleIdCounter.increment();
         uint256 articleId = _articleIdCounter.current();
-        string memory description = limitChars(_description);
+        string memory description_ = limitChars(_description);
         articles.push(
             Article(
                 _title,
-                description,
+                description_,
                 _authorName,
                 _authorAddress,
-                _supply,
+                _totalSupply,
                 _priceInFinney
             )
         );
-        _mint(_authorAddress, articleId, _supply, "");
+        _mint(_authorAddress, articleId, _totalSupply, "");
         _setURI(articleId, URI);
         _setTokenRoyalty(articleId, owner(), royalties);
         return articleId;
     }
 
-
+    function buyArticle(uint256 _articleId, uint256 value) external {
+        require (getArticle(_articleId).supply > 0, "Nothing to buy");
+        require (value *1000 >= getArticle(_articleId).priceInFinney);
+        safeTransferFrom(getArticle(_articleId).authorAddress, msg.sender, _articleId, 1, "");
+        articles[_articleId].supply--;
+    }
 
     function getArticle(uint256 _articleId)
         public
@@ -161,7 +163,6 @@ contract TheSourceArticle is ERC1155URIStorage, Royalties2, Ownable {
     function getRoyalties() public view returns (uint256){
         return royalties;
     }
-
 
 
     function setRoyalties(uint256 _royalties) public onlyOwner{
