@@ -1,6 +1,7 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import * as dotenv from 'dotenv'
+import "@typechain/hardhat"
 
 dotenv.config()
 const { MNEMONIC, GOERLIRPC, INFURA_ID, MUMBAIRPC, ALCHEMY_ID, MAIN_ACCOUNT, CLIENT_1_ACCOUNT, CLIENT_2_ACCOUNT, CLIENT_3_ACCOUNT, CLIENT_4_ACCOUNT } = process.env

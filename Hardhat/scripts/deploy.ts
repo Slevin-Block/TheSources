@@ -8,14 +8,14 @@ async function main() {
     console.log([owner.address, ...clients.map(account => account.address)])
     
     // MEMBRE TOKEN DEPLOYEMENT
-    const baseURIMembreToken = "https://gateway.pinata.cloud/ipfs/QmQ41vE6evX9ysRiW3PJzf4UTeV5V6QTYcHCc6EcG3qtKa/"
-    const TheSourceMembreToken = await ethers.getContractFactory("TheSourceMembreToken");
-    const theSourceMembreToken = await TheSourceMembreToken.deploy();
-    await theSourceMembreToken.deployed();
-    const membreToken = await ethers.getContractAt("TheSourceMembreToken", theSourceMembreToken.address);
+    const TheSourceMarketPlace = await ethers.getContractFactory("TheSourceMarketPlace");
+    const theSourceMarketPlace = await TheSourceMarketPlace.deploy();
+    await theSourceMarketPlace.deployed();
+    console.log( `theSourceMarketPlace has been deployed to address ${theSourceMarketPlace.address}` )
+    /* const membreToken = await ethers.getContractAt("TheSourceMembreToken", theSourceMembreToken.address);
     const address_MemberToken = membreToken.address
     console.log( `TheSourceMembreToken has been deployed to address ${address_MemberToken}` )
-    await membreToken.setBaseURI(baseURIMembreToken)
+    await membreToken.setBaseURI(baseURIMembreToken) */
     
     fs.readdir('./Tokens/json', (err, files) => {
         if (err) return console.log(err)
@@ -23,7 +23,7 @@ async function main() {
     })
 
 
-    let theSourceMarketPlace
+    /* let theSourceMarketPlace
     if (address_MemberToken){
         const TheSourceMarketPlace = await ethers.getContractFactory("TheSourceMarketPlace");
         theSourceMarketPlace = await TheSourceMarketPlace.deploy(address_MemberToken);
@@ -42,7 +42,7 @@ async function main() {
 
         //const tokenId = await theSourceMarketPlace.mintMemberToken({from :})
 
-    }
+    } */
 
 }
 
