@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity ^0.8.18;
 
 /*********************************************************************************************************************
   _____ _          _____                                     ___________ _____    ___       _   _      _      
@@ -54,12 +54,12 @@ contract TheSourceArticle is ERC1155URIStorage, Ownable {
     Article[] articles;
 
     function safeMint(
-        address _authorAddress,
         string calldata _title,
         string calldata _description,
         string calldata _authorName,
+        address _authorAddress,
         uint256 _totalSupply,
-        uint256 _price,
+        uint256 _priceInFinney,
         string memory URI
     ) public onlyOwner returns (uint256) {
         _articleIdCounter.increment();
@@ -72,43 +72,36 @@ contract TheSourceArticle is ERC1155URIStorage, Ownable {
                 _authorName,
                 _authorAddress,
                 _totalSupply,
-                _price
+                _priceInFinney
             )
         );
         _mint(_authorAddress, articleId, _totalSupply, "");
+        _setApprovalForAll(_authorAddress, msg.sender ,true);
         _setURI(articleId, URI);
         return articleId;
     }
 
-    function buyArticle(uint256 _articleId, uint256 amount) public payable {
-        require (getArticle(_articleId).supply > 0, "Nothing to buy");
-        safeTransferFrom(getArticle(_articleId).authorAddress, msg.sender, _articleId, 1, "");
-        articles[_articleId].supply--;
+    function buyArticle(address _seller, uint256 _articleId, uint256 amount) external {
+        (,, address author) = getArticleInfos(_articleId);
+        safeTransferFrom(author, _seller, _articleId, 1, "");
+        articles[_articleId].supply-= amount;
     }
 
     function getArticle(uint256 _articleId) public view returns (Article memory) {
+        require(_articleId > 0, "Invalid index");
+        require(_articleId < articles.length, "Invalid index");
         return articles[_articleId];
     }
 
-    function getArticleStockandPrice(uint256 _articleId) public view returns (uint256, uint256) {
+    function getArticleInfos(uint256 _articleId) public view returns (uint256, uint256, address) {
         require(_articleId > 0, "Invalid index");
         require(_articleId < articles.length, "Invalid index");
-        return (articles[_articleId].supply, articles[_articleId].price);
+        return (articles[_articleId].supply, articles[_articleId].price, articles[_articleId].authorAddress);
     }
 
     function getNumberOfArticles() public view returns (uint256){
         return _articleIdCounter.current();
     }
-
-    function mintBatch(
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) public onlyOwner {
-        //_mintBatch(to, ids, amounts, data);
-    }
-
 
     function limitChars(string memory str, uint256 limit)
         internal

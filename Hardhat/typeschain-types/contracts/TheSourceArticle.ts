@@ -58,17 +58,16 @@ export interface TheSourceArticleInterface extends utils.Interface {
   functions: {
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
-    "buyArticle(uint256,uint256)": FunctionFragment;
+    "buyArticle(address,uint256,uint256)": FunctionFragment;
     "getArticle(uint256)": FunctionFragment;
-    "getArticleStockandPrice(uint256)": FunctionFragment;
+    "getArticleInfos(uint256)": FunctionFragment;
     "getNumberOfArticles()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mintBatch(address,uint256[],uint256[],bytes)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "royalties()": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
-    "safeMint(address,string,string,string,uint256,uint256,string)": FunctionFragment;
+    "safeMint(string,string,string,address,uint256,uint256,string)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -82,10 +81,9 @@ export interface TheSourceArticleInterface extends utils.Interface {
       | "balanceOfBatch"
       | "buyArticle"
       | "getArticle"
-      | "getArticleStockandPrice"
+      | "getArticleInfos"
       | "getNumberOfArticles"
       | "isApprovedForAll"
-      | "mintBatch"
       | "owner"
       | "renounceOwnership"
       | "royalties"
@@ -108,14 +106,18 @@ export interface TheSourceArticleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "buyArticle",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "getArticle",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getArticleStockandPrice",
+    functionFragment: "getArticleInfos",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -125,15 +127,6 @@ export interface TheSourceArticleInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintBatch",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -198,7 +191,7 @@ export interface TheSourceArticleInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "buyArticle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getArticle", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getArticleStockandPrice",
+    functionFragment: "getArticleInfos",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -209,7 +202,6 @@ export interface TheSourceArticleInterface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "mintBatch", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -354,8 +346,9 @@ export interface TheSourceArticle extends BaseContract {
     ): Promise<[BigNumber[]]>;
 
     buyArticle(
+      _seller: PromiseOrValue<string>,
       _articleId: PromiseOrValue<BigNumberish>,
-      value: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -364,10 +357,10 @@ export interface TheSourceArticle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[TheSourceArticle.ArticleStructOutput]>;
 
-    getArticleStockandPrice(
+    getArticleInfos(
       _articleId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
+    ): Promise<[BigNumber, BigNumber, string]>;
 
     getNumberOfArticles(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -376,14 +369,6 @@ export interface TheSourceArticle extends BaseContract {
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    mintBatch(
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -403,12 +388,12 @@ export interface TheSourceArticle extends BaseContract {
     ): Promise<ContractTransaction>;
 
     safeMint(
-      _authorAddress: PromiseOrValue<string>,
       _title: PromiseOrValue<string>,
       _description: PromiseOrValue<string>,
       _authorName: PromiseOrValue<string>,
+      _authorAddress: PromiseOrValue<string>,
       _totalSupply: PromiseOrValue<BigNumberish>,
-      _price: PromiseOrValue<BigNumberish>,
+      _priceInFinney: PromiseOrValue<BigNumberish>,
       URI: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -457,8 +442,9 @@ export interface TheSourceArticle extends BaseContract {
   ): Promise<BigNumber[]>;
 
   buyArticle(
+    _seller: PromiseOrValue<string>,
     _articleId: PromiseOrValue<BigNumberish>,
-    value: PromiseOrValue<BigNumberish>,
+    amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -467,10 +453,10 @@ export interface TheSourceArticle extends BaseContract {
     overrides?: CallOverrides
   ): Promise<TheSourceArticle.ArticleStructOutput>;
 
-  getArticleStockandPrice(
+  getArticleInfos(
     _articleId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber]>;
+  ): Promise<[BigNumber, BigNumber, string]>;
 
   getNumberOfArticles(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -479,14 +465,6 @@ export interface TheSourceArticle extends BaseContract {
     operator: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  mintBatch(
-    to: PromiseOrValue<string>,
-    ids: PromiseOrValue<BigNumberish>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -506,12 +484,12 @@ export interface TheSourceArticle extends BaseContract {
   ): Promise<ContractTransaction>;
 
   safeMint(
-    _authorAddress: PromiseOrValue<string>,
     _title: PromiseOrValue<string>,
     _description: PromiseOrValue<string>,
     _authorName: PromiseOrValue<string>,
+    _authorAddress: PromiseOrValue<string>,
     _totalSupply: PromiseOrValue<BigNumberish>,
-    _price: PromiseOrValue<BigNumberish>,
+    _priceInFinney: PromiseOrValue<BigNumberish>,
     URI: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -560,8 +538,9 @@ export interface TheSourceArticle extends BaseContract {
     ): Promise<BigNumber[]>;
 
     buyArticle(
+      _seller: PromiseOrValue<string>,
       _articleId: PromiseOrValue<BigNumberish>,
-      value: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -570,10 +549,10 @@ export interface TheSourceArticle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<TheSourceArticle.ArticleStructOutput>;
 
-    getArticleStockandPrice(
+    getArticleInfos(
       _articleId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
+    ): Promise<[BigNumber, BigNumber, string]>;
 
     getNumberOfArticles(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -582,14 +561,6 @@ export interface TheSourceArticle extends BaseContract {
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    mintBatch(
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -607,12 +578,12 @@ export interface TheSourceArticle extends BaseContract {
     ): Promise<void>;
 
     safeMint(
-      _authorAddress: PromiseOrValue<string>,
       _title: PromiseOrValue<string>,
       _description: PromiseOrValue<string>,
       _authorName: PromiseOrValue<string>,
+      _authorAddress: PromiseOrValue<string>,
       _totalSupply: PromiseOrValue<BigNumberish>,
-      _price: PromiseOrValue<BigNumberish>,
+      _priceInFinney: PromiseOrValue<BigNumberish>,
       URI: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -720,8 +691,9 @@ export interface TheSourceArticle extends BaseContract {
     ): Promise<BigNumber>;
 
     buyArticle(
+      _seller: PromiseOrValue<string>,
       _articleId: PromiseOrValue<BigNumberish>,
-      value: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -730,7 +702,7 @@ export interface TheSourceArticle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getArticleStockandPrice(
+    getArticleInfos(
       _articleId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -741,14 +713,6 @@ export interface TheSourceArticle extends BaseContract {
       account: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mintBatch(
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -769,12 +733,12 @@ export interface TheSourceArticle extends BaseContract {
     ): Promise<BigNumber>;
 
     safeMint(
-      _authorAddress: PromiseOrValue<string>,
       _title: PromiseOrValue<string>,
       _description: PromiseOrValue<string>,
       _authorName: PromiseOrValue<string>,
+      _authorAddress: PromiseOrValue<string>,
       _totalSupply: PromiseOrValue<BigNumberish>,
-      _price: PromiseOrValue<BigNumberish>,
+      _priceInFinney: PromiseOrValue<BigNumberish>,
       URI: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -824,8 +788,9 @@ export interface TheSourceArticle extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     buyArticle(
+      _seller: PromiseOrValue<string>,
       _articleId: PromiseOrValue<BigNumberish>,
-      value: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -834,7 +799,7 @@ export interface TheSourceArticle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getArticleStockandPrice(
+    getArticleInfos(
       _articleId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -847,14 +812,6 @@ export interface TheSourceArticle extends BaseContract {
       account: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mintBatch(
-      to: PromiseOrValue<string>,
-      ids: PromiseOrValue<BigNumberish>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -875,12 +832,12 @@ export interface TheSourceArticle extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     safeMint(
-      _authorAddress: PromiseOrValue<string>,
       _title: PromiseOrValue<string>,
       _description: PromiseOrValue<string>,
       _authorName: PromiseOrValue<string>,
+      _authorAddress: PromiseOrValue<string>,
       _totalSupply: PromiseOrValue<BigNumberish>,
-      _price: PromiseOrValue<BigNumberish>,
+      _priceInFinney: PromiseOrValue<BigNumberish>,
       URI: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

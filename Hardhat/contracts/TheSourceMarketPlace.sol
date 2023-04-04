@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity ^0.8.18;
 
 /*********************************************************************************************************************
   _____ _          _____                                ___  ___           _        _         _                
@@ -37,6 +37,7 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 /* STATE */
     uint256 private memberTokenPrice;
     uint256 private articlePrice;
+    uint256 public royalties; // on 1000 => 2.5% corresponds to 25
 
 /* EVENTS */
     event membershipPrice(uint256 newPrice);
@@ -51,12 +52,14 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
         address _memberTokenAddr,
         uint256 _memberTokenPrice,
         address _articleContract,
-        uint256 _articlePrice
+        uint256 _articlePrice,
+        uint256 _royalties
     ) public onlyOwner{
         memberTokenContract = TheSourceMemberToken(_memberTokenAddr);
         memberTokenPrice = _memberTokenPrice;
         articleContract = TheSourceArticle(_articleContract);
         articlePrice = _articlePrice;
+        royalties = _royalties;
     }
     
 
@@ -127,10 +130,10 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
         require(msg.value >= articlePrice, "Not enough");
 
         uint256 articleId = articleContract.safeMint(
-            msg.sender,
             _title,
             _description,
             _authorName,
+            msg.sender,
             _supply,
             _price,
             URI
@@ -140,10 +143,17 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
         return articleId;
     }
 
-    function buyArticle(uint256 _articleId) public payable returns (bool){
-        articleContract.buyArticle(_articleId, msg.value);
-        uint256 ownerFees =  msg.value * 25 / 1000;
-        balances[owner()] += msg.value - ownerFees;
+    function buyArticle(uint256 _articleId, uint256 _amount) public payable returns (bool){
+        (uint256 supply, uint256 unitPrice, address author)= articleContract.getArticleInfos(_articleId);
+
+        require(msg.value >= unitPrice * _amount, "Not enough");
+        require(_amount <= supply, "Not enough supply");
+        /* Verification of the existence of the index, into above getArticleInfos require */
+
+        articleContract.buyArticle(msg.sender, _articleId, _amount);
+        //articleContract.safeTransferFrom(author, msg.sender, _articleId, _amount, "");
+        uint256 ownerFees =  msg.value * royalties / 1000;
+        balances[author] += msg.value - ownerFees;
         balances[owner()] += ownerFees;
         return true;
     }
@@ -164,6 +174,15 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
         balances[msg.sender] -= amount;
         (bool success, ) = msg.sender.call{value : amount}("");
         require(success, "Transfer failed.");
+    }
+
+
+    function myBalance() public view returns (uint256){
+        return balances[msg.sender];
+    }
+
+    function balanceOf(address user) public view onlyOwner returns (uint256){
+        return balances[user];
     }
 
     function transferOwnership(address newOwner) public override onlyOwner {

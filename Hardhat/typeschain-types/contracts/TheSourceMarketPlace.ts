@@ -30,15 +30,18 @@ import type {
 
 export interface TheSourceMarketPlaceInterface extends utils.Interface {
   functions: {
+    "balanceOf(address)": FunctionFragment;
     "balanceOfMemberToken()": FunctionFragment;
-    "buyArticle(uint256)": FunctionFragment;
+    "buyArticle(uint256,uint256)": FunctionFragment;
     "buyMemberToken()": FunctionFragment;
     "getArticlePrice()": FunctionFragment;
     "getMemberTokenPrice()": FunctionFragment;
-    "init(address,uint256,address,uint256)": FunctionFragment;
+    "init(address,uint256,address,uint256,uint256)": FunctionFragment;
     "mintArticle(uint256,string,string,string,uint256,uint256,string)": FunctionFragment;
+    "myBalance()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "royalties()": FunctionFragment;
     "setArticlePrice(uint256)": FunctionFragment;
     "setMemberTokenPrice(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -47,6 +50,7 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "balanceOf"
       | "balanceOfMemberToken"
       | "buyArticle"
       | "buyMemberToken"
@@ -54,8 +58,10 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
       | "getMemberTokenPrice"
       | "init"
       | "mintArticle"
+      | "myBalance"
       | "owner"
       | "renounceOwnership"
+      | "royalties"
       | "setArticlePrice"
       | "setMemberTokenPrice"
       | "transferOwnership"
@@ -63,12 +69,16 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
   ): FunctionFragment;
 
   encodeFunctionData(
+    functionFragment: "balanceOf",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "balanceOfMemberToken",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "buyArticle",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "buyMemberToken",
@@ -88,6 +98,7 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
@@ -103,11 +114,13 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
       PromiseOrValue<string>
     ]
   ): string;
+  encodeFunctionData(functionFragment: "myBalance", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "royalties", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setArticlePrice",
     values: [PromiseOrValue<BigNumberish>]
@@ -125,6 +138,7 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
 
+  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "balanceOfMemberToken",
     data: BytesLike
@@ -147,11 +161,13 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     functionFragment: "mintArticle",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "myBalance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "royalties", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setArticlePrice",
     data: BytesLike
@@ -250,10 +266,16 @@ export interface TheSourceMarketPlace extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    balanceOf(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     balanceOfMemberToken(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     buyArticle(
       _articleId: PromiseOrValue<BigNumberish>,
+      _amount: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -270,6 +292,7 @@ export interface TheSourceMarketPlace extends BaseContract {
       _memberTokenPrice: PromiseOrValue<BigNumberish>,
       _articleContract: PromiseOrValue<string>,
       _articlePrice: PromiseOrValue<BigNumberish>,
+      _royalties: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -284,11 +307,15 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    myBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    royalties(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,
@@ -311,10 +338,16 @@ export interface TheSourceMarketPlace extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  balanceOf(
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   balanceOfMemberToken(overrides?: CallOverrides): Promise<BigNumber>;
 
   buyArticle(
     _articleId: PromiseOrValue<BigNumberish>,
+    _amount: PromiseOrValue<BigNumberish>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -331,6 +364,7 @@ export interface TheSourceMarketPlace extends BaseContract {
     _memberTokenPrice: PromiseOrValue<BigNumberish>,
     _articleContract: PromiseOrValue<string>,
     _articlePrice: PromiseOrValue<BigNumberish>,
+    _royalties: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -345,11 +379,15 @@ export interface TheSourceMarketPlace extends BaseContract {
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  myBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  royalties(overrides?: CallOverrides): Promise<BigNumber>;
 
   setArticlePrice(
     _newPrice: PromiseOrValue<BigNumberish>,
@@ -372,10 +410,16 @@ export interface TheSourceMarketPlace extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    balanceOf(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     balanceOfMemberToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     buyArticle(
       _articleId: PromiseOrValue<BigNumberish>,
+      _amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -390,6 +434,7 @@ export interface TheSourceMarketPlace extends BaseContract {
       _memberTokenPrice: PromiseOrValue<BigNumberish>,
       _articleContract: PromiseOrValue<string>,
       _articlePrice: PromiseOrValue<BigNumberish>,
+      _royalties: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -404,9 +449,13 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    myBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    royalties(overrides?: CallOverrides): Promise<BigNumber>;
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,
@@ -458,10 +507,16 @@ export interface TheSourceMarketPlace extends BaseContract {
   };
 
   estimateGas: {
+    balanceOf(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     balanceOfMemberToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     buyArticle(
       _articleId: PromiseOrValue<BigNumberish>,
+      _amount: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -478,6 +533,7 @@ export interface TheSourceMarketPlace extends BaseContract {
       _memberTokenPrice: PromiseOrValue<BigNumberish>,
       _articleContract: PromiseOrValue<string>,
       _articlePrice: PromiseOrValue<BigNumberish>,
+      _royalties: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -492,11 +548,15 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    myBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    royalties(overrides?: CallOverrides): Promise<BigNumber>;
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,
@@ -520,12 +580,18 @@ export interface TheSourceMarketPlace extends BaseContract {
   };
 
   populateTransaction: {
+    balanceOf(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     balanceOfMemberToken(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     buyArticle(
       _articleId: PromiseOrValue<BigNumberish>,
+      _amount: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -544,6 +610,7 @@ export interface TheSourceMarketPlace extends BaseContract {
       _memberTokenPrice: PromiseOrValue<BigNumberish>,
       _articleContract: PromiseOrValue<string>,
       _articlePrice: PromiseOrValue<BigNumberish>,
+      _royalties: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -558,11 +625,15 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    myBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    royalties(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,
