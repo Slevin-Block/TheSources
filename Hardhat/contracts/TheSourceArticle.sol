@@ -33,7 +33,7 @@ contract TheSourceArticle is ERC1155URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _articleIdCounter;
-    uint256 public royalties; //base 1000 for percentage
+    uint256 public royalties;  // on 1000 => 2.5% corresponds to 25
 
     constructor(address _marketPlaceAddr, uint256 _royalties) ERC1155("") {
         Article memory genesis = Article("Genesis", "", "", address(0), 0, 0);

@@ -2,7 +2,13 @@
 npx hardhat compile
 
 # Pour deployer
-npx hardhat run ./scripts/deploy.ts 
+npx hardhat run ./scripts/deploy.ts --network localhost
 
-# address de déploiement
-0x5FbDB2315678afecb367f032d93F642f64180aa3
+# Pour tester
+npx hardhat test
+
+# Pour tester avec le coverage
+npx hardhat coverage
+
+# Pour lancer la blockchain locale
+npx hardhat node 

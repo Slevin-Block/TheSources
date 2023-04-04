@@ -36,12 +36,11 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     "buyMemberToken()": FunctionFragment;
     "getArticlePrice()": FunctionFragment;
     "getMemberTokenPrice()": FunctionFragment;
-    "init(address,uint256,address,uint256,uint256)": FunctionFragment;
+    "init(address,uint256,address,uint256)": FunctionFragment;
     "mintArticle(uint256,string,string,string,uint256,uint256,string)": FunctionFragment;
     "myBalance()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "royalties()": FunctionFragment;
     "setArticlePrice(uint256)": FunctionFragment;
     "setMemberTokenPrice(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -61,7 +60,6 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
       | "myBalance"
       | "owner"
       | "renounceOwnership"
-      | "royalties"
       | "setArticlePrice"
       | "setMemberTokenPrice"
       | "transferOwnership"
@@ -98,7 +96,6 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
@@ -120,7 +117,6 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "royalties", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setArticlePrice",
     values: [PromiseOrValue<BigNumberish>]
@@ -167,7 +163,6 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "royalties", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setArticlePrice",
     data: BytesLike
@@ -292,7 +287,6 @@ export interface TheSourceMarketPlace extends BaseContract {
       _memberTokenPrice: PromiseOrValue<BigNumberish>,
       _articleContract: PromiseOrValue<string>,
       _articlePrice: PromiseOrValue<BigNumberish>,
-      _royalties: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -314,8 +308,6 @@ export interface TheSourceMarketPlace extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    royalties(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,
@@ -364,7 +356,6 @@ export interface TheSourceMarketPlace extends BaseContract {
     _memberTokenPrice: PromiseOrValue<BigNumberish>,
     _articleContract: PromiseOrValue<string>,
     _articlePrice: PromiseOrValue<BigNumberish>,
-    _royalties: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -386,8 +377,6 @@ export interface TheSourceMarketPlace extends BaseContract {
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  royalties(overrides?: CallOverrides): Promise<BigNumber>;
 
   setArticlePrice(
     _newPrice: PromiseOrValue<BigNumberish>,
@@ -434,7 +423,6 @@ export interface TheSourceMarketPlace extends BaseContract {
       _memberTokenPrice: PromiseOrValue<BigNumberish>,
       _articleContract: PromiseOrValue<string>,
       _articlePrice: PromiseOrValue<BigNumberish>,
-      _royalties: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -454,8 +442,6 @@ export interface TheSourceMarketPlace extends BaseContract {
     owner(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    royalties(overrides?: CallOverrides): Promise<BigNumber>;
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,
@@ -533,7 +519,6 @@ export interface TheSourceMarketPlace extends BaseContract {
       _memberTokenPrice: PromiseOrValue<BigNumberish>,
       _articleContract: PromiseOrValue<string>,
       _articlePrice: PromiseOrValue<BigNumberish>,
-      _royalties: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -555,8 +540,6 @@ export interface TheSourceMarketPlace extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    royalties(overrides?: CallOverrides): Promise<BigNumber>;
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,
@@ -610,7 +593,6 @@ export interface TheSourceMarketPlace extends BaseContract {
       _memberTokenPrice: PromiseOrValue<BigNumberish>,
       _articleContract: PromiseOrValue<string>,
       _articlePrice: PromiseOrValue<BigNumberish>,
-      _royalties: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -632,8 +614,6 @@ export interface TheSourceMarketPlace extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    royalties(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,

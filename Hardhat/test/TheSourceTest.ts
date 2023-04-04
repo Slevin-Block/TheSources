@@ -102,8 +102,7 @@ describe("TheSource", function () {
                 theSourceMemberToken.address,
                 MEMBER_TOKEN_PRICE,
                 theSourceArticle.address,
-                MINT_ARTICLE_PRICE,
-                ROYALTIES
+                MINT_ARTICLE_PRICE
             )
 
         return { theSourceMarketPlace, theSourceArticle, theSourceMemberToken, owner, otherAccount }
@@ -190,8 +189,7 @@ describe("TheSource", function () {
                         theSourceMemberToken.address,
                         MEMBER_TOKEN_PRICE,
                         theSourceArticle.address,
-                        MINT_ARTICLE_PRICE,
-                        ROYALTIES
+                        MINT_ARTICLE_PRICE
                     )
                 await tx.wait(1);
                 expect(tx.hash).to.be.a('string');
@@ -207,8 +205,7 @@ describe("TheSource", function () {
                             theSourceMemberToken.address,
                             MEMBER_TOKEN_PRICE,
                             theSourceArticle.address,
-                            MINT_ARTICLE_PRICE,
-                            ROYALTIES
+                            MINT_ARTICLE_PRICE
                         ))
                     .to.be.revertedWith("Ownable: caller is not the owner")
             })
@@ -252,6 +249,23 @@ describe("TheSource", function () {
                 await expect(theSourceMarketPlace.connect(user).buyMemberToken({ value: MEMBER_TOKEN_PRICE }))
                     .to.emit(theSourceMemberToken, "Transfer").withArgs(ethers.constants.AddressZero, user.address, 1)
             });
+
+            it("...should mint a Member Token outside the MarketPlace", async function () {
+                const { theSourceMarketPlace, theSourceMemberToken, owner, otherAccount } = await loadFixture(initialFixture);
+                const user = otherAccount[0]
+
+                await expect(theSourceMemberToken.connect(user).safeMint(user.address))
+                    .to.be.revertedWith("Ownable: caller is not the owner")
+            });
+
+            it("...should increment tokenId", async function () {
+                const { theSourceMarketPlace, theSourceMemberToken, owner, otherAccount } = await loadFixture(initialFixture);
+                const user = otherAccount[0]
+                const oldIdToken = await theSourceMemberToken.getNumberOfMemberToken()
+                await theSourceMarketPlace.connect(user).buyMemberToken({ value: MEMBER_TOKEN_PRICE })
+                expect((await theSourceMemberToken.getNumberOfMemberToken()).sub(1)).to.equal(oldIdToken)
+            });
+
             it("...should get the good URI after minning", async function () {
                 const { theSourceMarketPlace, theSourceMemberToken, owner, otherAccount } = await loadFixture(initialFixture);
                 const user = otherAccount[0]
@@ -318,6 +332,14 @@ describe("TheSource", function () {
                 ))
                     .to.emit(theSourceArticle, "TransferSingle").withArgs(theSourceMarketPlace.address, ethers.constants.AddressZero, user.address, 1, supply)
             });
+            it("...should mint a Member Token outside the MarketPlace", async function () {
+                const { theSourceMarketPlace, theSourceArticle, theSourceMemberToken, owner, user, otherAccount } = await loadFixture(readyToEditArticleFixture)
+
+                await expect(theSourceArticle.connect(user).safeMint(
+                title, description, authorName, user.address, supply, myArticlePrice, URI,
+                ))
+                    .to.be.revertedWith("Ownable: caller is not the owner")
+            });
 
             it("...should reject for a mint of a Article by a no-member ", async function () {
                 const { theSourceMarketPlace, theSourceArticle, theSourceMemberToken, owner, user, otherAccount } = await loadFixture(readyToEditArticleFixture)
@@ -383,6 +405,14 @@ describe("TheSource", function () {
                 await expect(theSourceMarketPlace.connect(seller).buyArticle(wrongId, qtyArticle, { value: price }))
                     .to.be.revertedWith("Invalid index");
             })
+            it("...shouldn't buy the 0 Article", async function () {
+                const wrongId = 0
+                const { theSourceMarketPlace, theSourceArticle, theSourceMemberToken, owner, journalist, seller, otherAccount } = await loadFixture(readyToBuyArticleFixture)
+                const [supply, price, authorAddress] = await theSourceArticle.getArticleInfos(idArticle);
+
+                await expect(theSourceMarketPlace.connect(seller).buyArticle(wrongId, qtyArticle, { value: price }))
+                    .to.be.revertedWith("Invalid index");
+            })
 
             it("...shouldn't buy a Article if he don't pay enough", async function () {
                 const wrongPayment = 1
@@ -400,6 +430,16 @@ describe("TheSource", function () {
                 await expect(theSourceMarketPlace.connect(seller).buyArticle(idArticle, qtyArticle * 1000, { value: myArticlePrice * 1000n }))
                     .to.be.revertedWith("Not enough supply");
             })
+            it("...shouldn't access to a inexistant Article", async function () {
+                const { theSourceMarketPlace, theSourceArticle, theSourceMemberToken, owner, journalist, seller, otherAccount } = await loadFixture(readyToBuyArticleFixture)
+                const actualId = await theSourceArticle.getNumberOfArticles()
+                await expect(theSourceArticle.getArticle(0)).to.be.revertedWith("Invalid index");
+                await expect(theSourceArticle.getArticleInfos(0)).to.be.revertedWith("Invalid index");
+                await expect(theSourceArticle.getArticle(actualId.add(1))).to.be.revertedWith("Invalid index");
+                await expect(theSourceArticle.getArticleInfos(actualId.add(1))).to.be.revertedWith("Invalid index");
+            })
+
+
         })
     })
 
@@ -463,9 +503,20 @@ describe("TheSource", function () {
                 assert.isOk(await seller2.sendTransaction({ to : theSourceMarketPlace.address, value : MEMBER_TOKEN_PRICE}))
                 expect(await ethers.provider.getBalance(theSourceMarketPlace.address)).to.equal(oldBalance.add(MEMBER_TOKEN_PRICE))
             })
-
-
+            it("...shouldn't withdraw 0", async function () {
+                const { theSourceMarketPlace, theSourceArticle, theSourceMemberToken, owner, journalist, seller1, seller2, cashFlow } = await loadFixture(completeFixture)
+                
+                await expect(theSourceMarketPlace.connect(owner).withdraw(0))
+                    .to.be.revertedWith("Amount must be greater than zero");
+            })
+            it("...shouldn't withdraw more than it has", async function () {
+                const { theSourceMarketPlace, theSourceArticle, theSourceMemberToken, owner, journalist, seller1, seller2, cashFlow } = await loadFixture(completeFixture)
+                
+                await expect(theSourceMarketPlace.connect(seller2).withdraw(WITHDRAW_VALUE))
+                    .to.be.revertedWith("Insufficient balance in contract");
+            })
         })
+
         describe("Contract balances", async function () {
             it("...should have the good balance in MarketPlace", async function () {
                 const { theSourceMarketPlace, theSourceArticle, theSourceMemberToken, owner, journalist, seller1, seller2, cashFlow } = await loadFixture(completeFixture)
@@ -497,5 +548,4 @@ describe("TheSource", function () {
             })
         })
     })
-
 });

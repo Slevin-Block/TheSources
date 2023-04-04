@@ -37,7 +37,6 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 /* STATE */
     uint256 private memberTokenPrice;
     uint256 private articlePrice;
-    uint256 public royalties; // on 1000 => 2.5% corresponds to 25
 
 /* EVENTS */
     event membershipPrice(uint256 newPrice);
@@ -52,14 +51,12 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
         address _memberTokenAddr,
         uint256 _memberTokenPrice,
         address _articleContract,
-        uint256 _articlePrice,
-        uint256 _royalties
+        uint256 _articlePrice
     ) public onlyOwner{
         memberTokenContract = TheSourceMemberToken(_memberTokenAddr);
         memberTokenPrice = _memberTokenPrice;
         articleContract = TheSourceArticle(_articleContract);
         articlePrice = _articlePrice;
-        royalties = _royalties;
     }
     
 
@@ -77,7 +74,6 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
     }
 
     function setMemberTokenPrice(uint256 _newPrice) public onlyOwner {
-        require(_newPrice > 0, "Price incorrect");
         memberTokenPrice = _newPrice;
         emit membershipPrice(_newPrice);
     }
@@ -109,7 +105,6 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
     }
 
     function setArticlePrice(uint256 _newPrice) public onlyOwner {
-        require(_newPrice > 0, "Price incorrect");
         articlePrice = _newPrice;
         emit newArticlePrice(_newPrice);
     }
@@ -151,7 +146,7 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
         /* Verification of the existence of the index, into above getArticleInfos require */
 
         articleContract.buyArticle(msg.sender, _articleId, _amount);
-        //articleContract.safeTransferFrom(author, msg.sender, _articleId, _amount, "");
+        uint256 royalties = articleContract.royalties();
         uint256 ownerFees =  msg.value * royalties / 1000;
         balances[author] += msg.value - ownerFees;
         balances[owner()] += ownerFees;

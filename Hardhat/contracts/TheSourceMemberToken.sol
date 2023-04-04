@@ -35,7 +35,7 @@ contract TheSourceMemberToken is ERC721URIStorage, Ownable {
     using Strings for uint256;
 
     Counters.Counter private _tokenIds;
-    uint256 public royalties; //base 1000 for percentage
+    uint256 public royalties;  // on 1000 => 2.5% corresponds to 25
     string base;
 
  
@@ -67,5 +67,4 @@ contract TheSourceMemberToken is ERC721URIStorage, Ownable {
 
         return tokenId;
     }
-
 }
