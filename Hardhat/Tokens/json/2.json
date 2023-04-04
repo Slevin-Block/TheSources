@@ -1,1 +1,14 @@
-{"description":"Member Token of TheSource https://the-sources.vercel.app/","image":"https://gateway.pinata.cloud/ipfs/QmXrDH8xL4nDyoP1HpmbGYQCrfXiTN4w7FhTpPmDfipa3Q/2.png","external_url":"ipfs://bafybeienjpnc3dcaeqyxkt3eodjfpemparjn655d6u2isxlc5qugm3rj24/2.png","name":"MemberToken TheSource","attributes":[{"trait_type":"tag","value":"ab5WNPjk146H"}]}
+{
+    "description": "Member Token of TheSource https://the-sources.vercel.app/",
+    "image": "#TAGCIDPINATA2.png",
+    "external_url": "#TAGCIDIPFS2.png",
+    "name": "MemberToken TheSource",
+    "seller_fee_basis_points": 250,
+    "fee_recipient": "#TAGMARKETPLACE",
+    "attributes": [
+        {
+            "trait_type": "tag",
+            "value": "3UKfBfEWMSUM"
+        }
+    ]
+}

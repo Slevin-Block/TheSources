@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity ^0.8.18;
 
 /*********************************************************************************************************************
   _____ _          _____                                ___  ___           _        _         _                
@@ -12,10 +12,9 @@ pragma solidity 0.8.19;
                                                                                       |_|                     
 *********************************************************************************************************************/
 
-import "./TheSourceMembreToken.sol";
+import "./TheSourceMemberToken.sol";
 import "./TheSourceArticle.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
-import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
 import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 
@@ -29,22 +28,20 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 
 *************************************************************/
 
-    using Counters for Counters.Counter;
-    mapping(address => uint256) balancesInFinney;
+    mapping(address => uint256) balances;
 
 /* CONTRACTS */
-    TheSourceMembreToken private memberTokenContract;
+    TheSourceMemberToken private memberTokenContract;
     TheSourceArticle private articleContract;
 
 /* STATE */
-    Counters.Counter private memberTokenCounter;
-    Counters.Counter private articleCounter;
-    uint256 private memberTokenPriceInFinney;
-    uint256 private articlePriceInFinney;
+    uint256 private memberTokenPrice;
+    uint256 private articlePrice;
+    uint256 public royalties; // on 1000 => 2.5% corresponds to 25
 
 /* EVENTS */
     event membershipPrice(uint256 newPrice);
-    event articlePrice(uint256 newPrice);
+    event newArticlePrice(uint256 newPrice);
     event createArticle(address from, uint256 memberTokenId, uint256 articleId);
 
 /* FUNCTION */
@@ -53,14 +50,16 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 
     function init(
         address _memberTokenAddr,
-        uint256 _memberTokenPriceInFinney,
+        uint256 _memberTokenPrice,
         address _articleContract,
-        uint256 _articlePriceInFinney
-    ) public onlyOwner {
-        memberTokenContract = TheSourceMembreToken(_memberTokenAddr);
-        memberTokenPriceInFinney = _memberTokenPriceInFinney;
+        uint256 _articlePrice,
+        uint256 _royalties
+    ) public onlyOwner{
+        memberTokenContract = TheSourceMemberToken(_memberTokenAddr);
+        memberTokenPrice = _memberTokenPrice;
         articleContract = TheSourceArticle(_articleContract);
-        articlePriceInFinney = _articlePriceInFinney;
+        articlePrice = _articlePrice;
+        royalties = _royalties;
     }
     
 
@@ -73,22 +72,21 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 *************************************************************/
 
 /*  PRICE OF A MEMBER TOKEN*/
-    function getMemberTokenPriceInFinney() public view returns (uint256) {
-        return memberTokenPriceInFinney;
+    function getMemberTokenPrice() public view returns (uint256) {
+        return memberTokenPrice;
     }
 
-    function setMemberTokenPriceInFinney(uint256 _newPrice) public onlyOwner {
+    function setMemberTokenPrice(uint256 _newPrice) public onlyOwner {
         require(_newPrice > 0, "Price incorrect");
-        memberTokenPriceInFinney = _newPrice;
+        memberTokenPrice = _newPrice;
         emit membershipPrice(_newPrice);
     }
 
 /* MANAGEMENT OF MEMBER TOKEN */
-    function buyMembreToken() public payable returns (uint256) {
-        require(msg.value * 1000 >= memberTokenPriceInFinney, "Not enough");
-        memberTokenCounter.increment();
+    function buyMemberToken() public payable returns (uint256) {
+        require(msg.value >= memberTokenPrice, "Not enough");
         uint256 tokenId = memberTokenContract.safeMint(msg.sender);
-        balancesInFinney[owner()] += msg.value * 1000;
+        balances[owner()] += msg.value;
         return tokenId;
     }
 
@@ -106,14 +104,14 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 *************************************************************/
 
 /*  PRICE OF A ARTICLE */
-    function getArticlePriceInFinney() public view returns (uint256) {
-        return articlePriceInFinney;
+    function getArticlePrice() public view returns (uint256) {
+        return articlePrice;
     }
 
-    function setArticlePriceInFinney(uint256 _newPrice) public onlyOwner {
+    function setArticlePrice(uint256 _newPrice) public onlyOwner {
         require(_newPrice > 0, "Price incorrect");
-        articlePriceInFinney = _newPrice;
-        emit articlePrice(_newPrice);
+        articlePrice = _newPrice;
+        emit newArticlePrice(_newPrice);
     }
 
 /* MANAGEMENT OF ARTICLES */
@@ -123,34 +121,40 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
         string calldata _description,
         string calldata _authorName,
         uint256 _supply,
-        uint256 _priceInFinney,
+        uint256 _price,
         string memory URI
     ) public payable returns (uint256) {
         // Has access
         require(memberTokenContract.ownerOf(_memberTokenId) == msg.sender, "Don't have access, buy or change MemberToken");
         // Has payed
-        require(msg.value * 1000 >= articlePriceInFinney, "Not enough");
+        require(msg.value >= articlePrice, "Not enough");
 
-        articleCounter.increment();
         uint256 articleId = articleContract.safeMint(
-            msg.sender,
             _title,
             _description,
             _authorName,
+            msg.sender,
             _supply,
-            _priceInFinney,
+            _price,
             URI
         );
-        balancesInFinney[owner()] += msg.value * 1000;
+        balances[owner()] += msg.value;
         emit createArticle(msg.sender, _memberTokenId, articleId);
         return articleId;
     }
 
-    function buyArticle(uint256 _articleId) public payable returns (bool){
-        articleContract.buyArticle(_articleId, msg.value);
-        uint256 ownerFees =  msg.value * 1000 * 25 / 1000;
-        balancesInFinney[owner()] += msg.value *1000 - ownerFees;
-        balancesInFinney[owner()] += ownerFees;
+    function buyArticle(uint256 _articleId, uint256 _amount) public payable returns (bool){
+        (uint256 supply, uint256 unitPrice, address author)= articleContract.getArticleInfos(_articleId);
+
+        require(msg.value >= unitPrice * _amount, "Not enough");
+        require(_amount <= supply, "Not enough supply");
+        /* Verification of the existence of the index, into above getArticleInfos require */
+
+        articleContract.buyArticle(msg.sender, _articleId, _amount);
+        //articleContract.safeTransferFrom(author, msg.sender, _articleId, _amount, "");
+        uint256 ownerFees =  msg.value * royalties / 1000;
+        balances[author] += msg.value - ownerFees;
+        balances[owner()] += ownerFees;
         return true;
     }
 
@@ -163,25 +167,32 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
                        |___/                       
 *************************************************************/
 
-    /* function withdrawInFinney(uint256 amount) public {
+    function withdraw(uint256 amount) public nonReentrant{
         require(amount > 0, "Amount must be greater than zero");
-        require( balancesInFinney[msg.sender] >= amount, "Insufficient balance in contract" );
-        
-    } */
+        require(balances[msg.sender] >= amount, "Insufficient balance in contract");
 
-    function withdrawInFinney(uint256 amount) public nonReentrant{
-        require(amount > 0, "Amount must be greater than zero");
-        require(balancesInFinney[msg.sender] >= amount, "Insufficient balance in contract");
-
-        balancesInFinney[msg.sender] -= amount;
-        (bool success, ) = msg.sender.call{value : amount / 1000}("");
+        balances[msg.sender] -= amount;
+        (bool success, ) = msg.sender.call{value : amount}("");
         require(success, "Transfer failed.");
+    }
+
+
+    function myBalance() public view returns (uint256){
+        return balances[msg.sender];
+    }
+
+    function balanceOf(address user) public view onlyOwner returns (uint256){
+        return balances[user];
     }
 
     function transferOwnership(address newOwner) public override onlyOwner {
         address oldOwner = owner();
         _transferOwnership(newOwner);
-        balancesInFinney[newOwner] += balancesInFinney[oldOwner];
-        balancesInFinney[oldOwner] = 0;
+        balances[newOwner] += balances[oldOwner];
+        balances[oldOwner] = 0;
+    }
+
+    receive() external payable {
+        balances[owner()] += msg.value;
     }
 }

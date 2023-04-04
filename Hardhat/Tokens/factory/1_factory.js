@@ -1,5 +1,6 @@
 const fs = require('fs');
 const Canvas = require('canvas');
+Canvas.registerFont('./MADE_TOMMY_Regular.otf', {family: 'tommy'});
 
 const NBRTOKEN = 10
 const IMG_DIR = '../img/';
@@ -28,7 +29,7 @@ async function drawtagOnImage(imagePath, tag, index) {
     ctx.drawImage(img, 0, 0);
 
     // TAG
-    ctx.font = 'bold 32px Arial';
+    ctx.font = 'bold 32px tommy';
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'right';
     ctx.fillText(`[${index.toString().padStart(8, '0')}]`, canvas.width * 0.95, canvas.height * 0.95);
