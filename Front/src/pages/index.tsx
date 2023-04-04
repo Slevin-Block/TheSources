@@ -2,19 +2,19 @@ import Editor from '../components/_archives/Editor'
 import Header from '../components/blocs/Header/Header'
 import ArticleCreate from '../components/blocs/ArticleCreate/ArticleCreate'
 import { Box, Button, Flex } from '@chakra-ui/react'
-
+import styles from "./index.module.css"
 
 function Page() {
 
     return (
-        <Box w='100vw' h='100vh'>
-            <Flex align='center' justify='space-between'  w="100%" h="15%" direction="row" px='1rem'>
+        <div className={styles.full}>
+            <div className={styles.header}>
                 <Header />
-            </Flex>
-            <Flex align='center' justify='center' w="100%" h="85%">
+            </div>
+            <div className={styles.body}>
                 <ArticleCreate />
-            </Flex>
-        </Box>
+            </div>
+        </div>
     )
 }
 

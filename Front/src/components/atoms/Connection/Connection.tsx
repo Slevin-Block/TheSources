@@ -3,9 +3,9 @@ import { useAccount, useConnect, useDisconnect, useNetwork, useSignMessage } fro
 import { useRecoilState } from 'recoil'
 import { ConnectionState, initConnection } from './ConnectionState'
 import { useSignIn } from './useSignIn'
-import { Box, Button } from '@chakra-ui/react'
 import { MetaMask, WalletConnect } from '../svgs'
 import styles from './Connection.module.css'
+import Button from '../Button/Button'
 
 export default function Connection() {
 
@@ -15,7 +15,8 @@ export default function Connection() {
     const { isConnected, address } = useAccount()
     const { signIn, isPending } = useSignIn()
     const [ onStart, setOnStart] = useState(true)
-
+    const {chain, chains} = useNetwork()
+    console.log(chains)
     // Search activ session
     useEffect(() => {
         const handler = async () => {
@@ -59,10 +60,13 @@ export default function Connection() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected])
+    console.log(isConnected, onStart, connection)
+    //console.log('CURRENT', connection, isLoading, isPending)
 
-    //console.log('CURRENT', connection)
+
+    
     return (
-        <Box>
+        <div className={styles.control}>
             {!connection.isConnected ? 
                 (connectors
                  .filter(connector => (isLoading || isPending) ? pendingConnector?.id === connector.id : true)
@@ -89,6 +93,6 @@ export default function Connection() {
                     Disconnect
                 </Button>
             }
-        </Box>
+        </div>
     )
 }

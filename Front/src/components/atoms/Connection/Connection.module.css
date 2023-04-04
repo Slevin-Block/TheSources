@@ -1,3 +1,12 @@
+.control{
+    display : flex;
+    justify-content : center;
+    gap : 1rem;
+    width : 10rem;
+    transition : all 1s;
+}
+
+
 .iconButton{
     font-size : 2rem;
 }

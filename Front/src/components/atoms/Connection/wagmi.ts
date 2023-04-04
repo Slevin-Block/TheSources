@@ -1,13 +1,13 @@
 import { createClient, configureChains, mainnet } from 'wagmi'
- 
-import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
+import { polygonMumbai } from '@wagmi/core/chains'
+
+
+
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
-
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet],
-  [/* alchemyProvider({ apiKey: 'yourAlchemyApiKey' }),  */publicProvider()],
+  [mainnet, polygonMumbai], [publicProvider()]
 )
 
 export const client = createClient({
