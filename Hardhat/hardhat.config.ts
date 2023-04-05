@@ -49,13 +49,13 @@ const config: HardhatUserConfig = {
         },
     },
 
-    /* defaultNetwork: "localhost", */
+    defaultNetwork: "localhost",
     networks,
     paths: {
         sources: "./contracts",
         tests: "./test",
         cache: "./cache",
-        artifacts: ".artifacts"//"../Front/src/artifacts"
+        artifacts: /* ".artifacts" */"../Front/src/artifacts"
     },
     typechain: {
         outDir: "typeschain-types",

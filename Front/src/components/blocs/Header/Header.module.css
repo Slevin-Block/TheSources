@@ -80,23 +80,32 @@
 }
 
 
-/* ADDRESS */
+/* Infos */
+
+
+.infos{
+    display : flex;
+    flex-direction : column;
+    gap : 0.2rem;
+}
 
 .addr{
     display :flex;
     align-items : center;
     justify-content : center;
     gap : 0.5rem;
-    border : 2px solid var(--text);
-    height : 1rem;
+    border : 2px solid var(--primary);
+    height : 1.5rem;
     border-radius : 3rem;
-    padding : 0.5rem 0.7rem;
+    padding : 0 0.7rem;
     font-size : 0.8rem;
 }
 .addr>p{
+    height : 100%;
     padding : 0;
+    line-height :200%;
 }
-.addr> p:nth-child(1){
-    border-right : 2px solid var(--text);
-    padding-right : 0.7rem;
+.addr> p:nth-child(2){
+    border-left : 2px solid var(--primary);
+    padding-left : 0.7rem;
 }

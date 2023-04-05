@@ -17,13 +17,21 @@ async function main() {
 
     // INITIALISATION
     const [owner, journalist, seller, ...otherAccounts] = await ethers.getSigners();
+    console.log('Owner : ', owner.address)
+    console.log('Journalist : ', journalist.address)
     //console.log([owner.address, ...otherAccounts.map(account => account.address)])
 
     // MARKET PLACE DEPLOYEMENT
     const TheSourceMarketPlace = await ethers.getContractFactory("TheSourceMarketPlace");
     const theSourceMarketPlace = await TheSourceMarketPlace.deploy();
     await theSourceMarketPlace.deployed();
+
+
+    console.log("---------------------------------------------------------------------")
+    console.log(" ")
     console.log(`TheSourceMarketPlace has been deployed to address ${theSourceMarketPlace.address}`)
+    console.log(" ")
+    console.log("---------------------------------------------------------------------")
 
 
     // MEMBER TOKEN DEPLOYEMENT
@@ -70,9 +78,14 @@ async function main() {
 
     console.log("INFOS ARTICLE : ", await theSourceArticle.getArticleInfos(1))
 
+
+    const MT_journalist= await theSourceMarketPlace.connect(journalist).balanceOfMemberToken()
+    const MT_owner= await theSourceMarketPlace.connect(owner).balanceOfMemberToken()
+
+    console.log("Nombre de token de membre du journaliste : ", MT_journalist)
+    console.log("Nombre de token de membre du owner : ", MT_owner)
     // BUY A ARTICLE
-    console.log( await theSourceArticle.balanceOf(journalist.address,1))
-    console.log("Approuval : ", await theSourceArticle.connect(theSourceMarketPlace.address).isApprovedForAll("1",journalist.address))
+
     /* await theSourceMarketPlace.connect(seller).buyArticle(1,1, {value : price})
     console.log("INFOS ARTICLE : ", await theSourceArticle.getArticleInfos(1)) */
 }

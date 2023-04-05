@@ -1,97 +1,94 @@
 import React, { useState, useEffect } from 'react'
 import { useAccount, useConnect, useDisconnect, useNetwork, useSignMessage } from 'wagmi'
-import { useRecoilState } from 'recoil'
-import { ConnectionState, initConnection } from './ConnectionState'
 import { useSignIn } from './useSignIn'
 import { MetaMask, WalletConnect } from '../svgs'
 import styles from './Connection.module.css'
-import Button from '../Button/Button'
 
 export default function Connection() {
 
-    const [connection, setConnection] = useRecoilState(ConnectionState)
-    const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
-    const { disconnect } = useDisconnect()
+    const [isRegistred, setIsRegistred] = useState(false)
     const { isConnected, address } = useAccount()
+    const { disconnect } = useDisconnect()
+    const { connect, connectors, isLoading, pendingConnector } = useConnect()
     const { signIn, isPending } = useSignIn()
-    const [ onStart, setOnStart] = useState(true)
-    const {chain, chains} = useNetwork()
-    console.log(chains)
+    const [onStart, setOnStart] = useState(true)
+    const { chain } = useNetwork()
+
+    //console.log(isConnected, address, chain)
     // Search activ session
     useEffect(() => {
         const handler = async () => {
             try {
                 const res = await fetch('/api/me')
                 const json = await res.json()
-                const isRegistred = !!json.address
-                isRegistred && setConnection((connection) => ({ ...connection, address: json.address, isRegistred, isConnected: true }))
+                !!json.address !== isRegistred && setIsRegistred(!!json.address)
                 setOnStart(false)
             } catch (err) {
                 console.log("Error : ", err)
             }
         }
-        // 1. page loads
         handler()
-
-        // 2. window is focused (in case user logs out of another window)
         window.addEventListener('focus', handler)
         return () => window.removeEventListener('focus', handler)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    // Search connection change
     useEffect(() => {
-        if (!onStart){
-            //console.log('BEFORE', connection, isConnected)
-            if (isConnected && !connection.isRegistred) {
+        if(!onStart){
+            // When reload windows
+            if (isConnected && !isRegistred){
                 (async () => {
                     const res = await signIn()
-                    if (res?.ok) setConnection({ ...connection, address, isConnected, isRegistred: true })
-                    else {
-                        disconnect()
-                        setConnection(initConnection)
-                    }
+                    if (res?.ok) setIsRegistred(true)
+                    else  handleDisconnect()
                 })()
-            }
 
-            if (!isConnected){
-                setConnection({ address, isConnected, isRegistred: false })
+            // When Disconnect Metamask
+            }else if (!isConnected && isRegistred){
+                handleDisconnect()
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isConnected])
-    console.log(isConnected, onStart, connection)
-    //console.log('CURRENT', connection, isLoading, isPending)
+    },[onStart, isConnected])
+
+    useEffect(()=>{
+        if (chain){
+            if (chain?.unsupported) console.log("Mauvais réseau")
+            else console.log("Bon réseau")
+        }
+    },[chain])
 
 
-    
+    const handleDisconnect = async () => {
+        disconnect()
+        setIsRegistred(false)
+        await fetch('/api/logout')
+    }
+
     return (
         <div className={styles.control}>
-            {!connection.isConnected ? 
+            {!isRegistred ?
                 (connectors
-                 .filter(connector => (isLoading || isPending) ? pendingConnector?.id === connector.id : true)
-                 .map((connector) => (
-                    <Button className={`${((isLoading && connector.id === pendingConnector?.id) || isPending) && 'loader'}`}
-                        disabled={isConnected}
-                        key={connector.id}
-                        onClick={() => connect({ connector })}
-                    >
-                        {connector.name === 'MetaMask' && <MetaMask className={styles.iconButton} />}
-                        {connector.name === 'WalletConnect' && <WalletConnect className={styles.iconButton}/>}
-                        {((isLoading && connector.id === pendingConnector?.id) || isPending) &&
-                            <div className="spinner"></div>}
-                    </Button>
-                )))
-            
-            :
-                <Button
-                    onClick={async () => {
-                        disconnect()
-                        await fetch('/api/logout')
-                    }}
+                    .filter(connector => (isLoading || isPending) ? pendingConnector?.id === connector.id : true)
+                    .map((connector) => (
+                        <button className={`${((isLoading && connector.id === pendingConnector?.id) || isPending) && 'loader'}`}
+                            disabled={isConnected}
+                            key={connector.id}
+                            onClick={() => connect({ connector })}
+                        >
+                            {connector.name === 'MetaMask' && <MetaMask className={styles.iconButton} />}
+                            {connector.name === 'WalletConnect' && <WalletConnect className={styles.iconButton} />}
+                            {((isLoading && connector.id === pendingConnector?.id) || isPending) &&
+                                <div className="spinner"></div>}
+                        </button>
+                    )))
+
+                :
+                <button
+                    onClick={handleDisconnect}
                 >
                     Disconnect
-                </Button>
+                </button>
             }
         </div>
     )
