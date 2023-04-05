@@ -1,0 +1,10 @@
+.valueBox{
+    display : flex;
+    flex-direction : row;
+}
+
+.container{
+    position: relative;
+    width: 48px;
+    height: 48px;
+}

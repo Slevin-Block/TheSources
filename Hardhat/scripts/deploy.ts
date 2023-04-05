@@ -17,6 +17,8 @@ async function main() {
 
     // INITIALISATION
     const [owner, journalist, seller, ...otherAccounts] = await ethers.getSigners();
+    console.log('Owner : ', owner.address)
+    console.log('Journalist : ', journalist.address)
     //console.log([owner.address, ...otherAccounts.map(account => account.address)])
 
     // MARKET PLACE DEPLOYEMENT
@@ -71,8 +73,7 @@ async function main() {
     console.log("INFOS ARTICLE : ", await theSourceArticle.getArticleInfos(1))
 
     // BUY A ARTICLE
-    console.log( await theSourceArticle.balanceOf(journalist.address,1))
-    console.log("Approuval : ", await theSourceArticle.connect(theSourceMarketPlace.address).isApprovedForAll("1",journalist.address))
+
     /* await theSourceMarketPlace.connect(seller).buyArticle(1,1, {value : price})
     console.log("INFOS ARTICLE : ", await theSourceArticle.getArticleInfos(1)) */
 }

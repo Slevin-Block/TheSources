@@ -1,0 +1,11 @@
+input {
+    border : 2px solid var(--primary);
+    padding : 0.4rem;
+    background : transparent;
+    border-radius : 0.2rem;
+}
+
+input:focus-within{
+    background : var(--onbackground);
+    outline: 2px solid var(--primary);
+}

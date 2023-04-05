@@ -85,13 +85,13 @@ p {
 }
 
 .spinner {
+  position: absolute;
   background-position: center;
   background-size: 50%;
   background-repeat: no-repeat;
   background-image: url("./img/loader.png");
   width: 100%;
   height: 100%;
-  position: absolute;
   top: 0;
   left: 0;
   animation-name: spin;
@@ -107,4 +107,13 @@ p {
   100% {
     transform: rotate(360deg);
   }
+}
+
+
+.block{
+    display : flex;
+    flex-direction : column;
+    border : 2px solid var(--secondary);
+    padding : 2rem;
+    border-radius : 0.4rem;
 }
