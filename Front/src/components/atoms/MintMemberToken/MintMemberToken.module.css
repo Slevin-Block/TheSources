@@ -1,6 +1,12 @@
 .valueBox{
     display : flex;
     flex-direction : row;
+    justify-content : space-between;
+}
+
+.valueBox >div{
+    display : flex;
+    flex-direction : row;
 }
 
 .container{

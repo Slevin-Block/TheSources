@@ -8,7 +8,7 @@ import { useAccount, useNetwork, useBalance } from 'wagmi'
 
 export default function Header() {
     const { isConnected, address } = useAccount()
-    const {data : balance} = useBalance({ address });
+    const {data : balance} = useBalance({ address, watch: true, });
     const { chain } = useNetwork()
     return (
         <div className={styles.full}>

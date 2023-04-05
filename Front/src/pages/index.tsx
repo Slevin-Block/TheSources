@@ -5,6 +5,8 @@ import styles from "./index.module.css"
 import { useAccount } from 'wagmi'
 import MemberTokenPrice from '../components/atoms/MemberTokenPrice/MemberTokenPrice'
 import MintMemberToken from '../components/atoms/MintMemberToken/MintMemberToken'
+import Test from '../components/atoms/Test/Test'
+import NFTPurchases from '../components/atoms/NFTPurchases/NFTPurchases'
 
 
 
@@ -22,7 +24,8 @@ function Page() {
             {isConnected && <div className={styles.body}>
                 {/* <ArticleCreate /> */}
                 <MemberTokenPrice />
-                {/* <MintMemberToken /> */}
+                <MintMemberToken />
+                <NFTPurchases />
             </div>}
         </div>
     )

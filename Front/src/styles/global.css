@@ -111,9 +111,22 @@ p {
 
 
 .block{
+    position : relative;
     display : flex;
     flex-direction : column;
     border : 2px solid var(--secondary);
     padding : 2rem;
     border-radius : 0.4rem;
+}
+
+.overlay{
+    position : absolute;
+    background-color : var(--text-light);
+    top : 0.2rem;
+    bottom : 0.2rem;
+    right : 0.2rem;
+    left : 0.2rem;
+    border-radius : inherit;
+    opacity : 0.9;
+    filter: blur(5px);
 }

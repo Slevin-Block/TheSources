@@ -25,7 +25,13 @@ async function main() {
     const TheSourceMarketPlace = await ethers.getContractFactory("TheSourceMarketPlace");
     const theSourceMarketPlace = await TheSourceMarketPlace.deploy();
     await theSourceMarketPlace.deployed();
+
+
+    console.log("---------------------------------------------------------------------")
+    console.log(" ")
     console.log(`TheSourceMarketPlace has been deployed to address ${theSourceMarketPlace.address}`)
+    console.log(" ")
+    console.log("---------------------------------------------------------------------")
 
 
     // MEMBER TOKEN DEPLOYEMENT
@@ -72,6 +78,12 @@ async function main() {
 
     console.log("INFOS ARTICLE : ", await theSourceArticle.getArticleInfos(1))
 
+
+    const MT_journalist= await theSourceMarketPlace.connect(journalist).balanceOfMemberToken()
+    const MT_owner= await theSourceMarketPlace.connect(owner).balanceOfMemberToken()
+
+    console.log("Nombre de token de membre du journaliste : ", MT_journalist)
+    console.log("Nombre de token de membre du owner : ", MT_owner)
     // BUY A ARTICLE
 
     /* await theSourceMarketPlace.connect(seller).buyArticle(1,1, {value : price})

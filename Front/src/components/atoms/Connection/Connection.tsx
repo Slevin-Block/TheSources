@@ -14,6 +14,7 @@ export default function Connection() {
     const [onStart, setOnStart] = useState(true)
     const { chain } = useNetwork()
 
+    //console.log(isConnected, address, chain)
     // Search activ session
     useEffect(() => {
         const handler = async () => {
