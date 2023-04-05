@@ -48,6 +48,7 @@ export default function Connection() {
                 handleDisconnect()
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[onStart, isConnected])
 
     useEffect(()=>{

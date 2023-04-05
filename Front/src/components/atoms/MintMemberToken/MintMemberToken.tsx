@@ -42,10 +42,11 @@ export default function MintMemberToken() {
     const { write, data } = useContractWrite(configBuyMemberToken)
     const { isLoading } = useWaitForTransaction({ hash: data?.hash })
 
-    useEffect(() => { isLoading && setIsUpdating(true) }, [isLoading])
+    useEffect(() => { isLoading && setIsUpdating(true) },[isLoading])
     useEffect(() => {
         !!numberOfMemberToken && setValue(parseInt(BigNumber.from(numberOfMemberToken).toString()))
         isUpdating && setIsUpdating(false)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [numberOfMemberToken])
 
 

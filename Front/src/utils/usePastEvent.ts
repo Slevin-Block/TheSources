@@ -19,6 +19,7 @@ export const usePastEvents = (contract: Contract | null, eventName: string) => {
         }
         console.log("contract invalid")
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contract, eventName])
 
     return events

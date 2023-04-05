@@ -42,7 +42,9 @@ export default function MemberTokenPrice() {
     }
 
     useEffect(() => { isLoading && setIsUpdating(true) }, [isLoading])
-    useEffect(() => { isUpdating && setIsUpdating(false) }, [currentMemberTokenPrice])
+    useEffect(() => { isUpdating && setIsUpdating(false) }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        ,[currentMemberTokenPrice])
 
 
 
