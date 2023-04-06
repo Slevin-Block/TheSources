@@ -40,6 +40,7 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 
 /* EVENTS */
     event membershipPrice(uint256 newPrice);
+    event newMemberToken(uint256 tokenId);
     event newArticlePrice(uint256 newPrice);
     event createArticle(address from, uint256 memberTokenId, uint256 articleId);
 
@@ -84,11 +85,11 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
     }
 
 /* MANAGEMENT OF MEMBER TOKEN */
-    function buyMemberToken() public payable returns (uint256) {
+    function buyMemberToken() public payable {
         require(msg.value >= memberTokenPrice, "Not enough");
         uint256 tokenId = memberTokenContract.safeMint(msg.sender);
         balances[owner()] += msg.value;
-        return tokenId;
+        emit newMemberToken(tokenId);
     }
 
     function balanceOfMemberToken() public view returns (uint256) {

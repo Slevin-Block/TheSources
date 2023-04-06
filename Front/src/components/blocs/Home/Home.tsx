@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useContract, useContractRead, useProvider } from 'wagmi'
-import TheSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
-import TheSourceArticle from "../../../artifacts/contracts/TheSourceArticle.sol/TheSourceArticle.json"
+import TheSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace/TheSourceMarketPlace.json"
+import TheSourceArticle from "../../../artifacts/contracts/TheSourceArticle/TheSourceArticle.json"
 import { usePastEvents } from '../../../utils/usePastEvent'
 import { useRecoilValue } from 'recoil'
 import { ContractsState } from '../../../store/ContractsState'

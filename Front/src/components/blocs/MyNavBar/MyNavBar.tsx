@@ -6,10 +6,10 @@ export default function NabBar() {
   return (
     <div className={`navbar ${styles.container}`}>
         <MyLink field='home'>       Home            </MyLink>
-        <MyLink field='token'>      Buy Member Token</MyLink>
-        <MyLink field='article'>    Mint an Article </MyLink>
+        <MyLink field='token'>      Begin Member</MyLink>
+        <MyLink field='article'>    Mint Article </MyLink>
         <MyLink field='list'>       My Articles     </MyLink>
-        <MyLink field='sell'>       Sell an Article </MyLink>
+        <MyLink field='sell'>       Sell Article </MyLink>
     </div>
   )
 }

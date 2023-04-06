@@ -212,12 +212,14 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     "createArticle(address,uint256,uint256)": EventFragment;
     "membershipPrice(uint256)": EventFragment;
     "newArticlePrice(uint256)": EventFragment;
+    "newMemberToken(uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "createArticle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "membershipPrice"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "newArticlePrice"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "newMemberToken"): EventFragment;
 }
 
 export interface OwnershipTransferredEventObject {
@@ -263,6 +265,16 @@ export type newArticlePriceEvent = TypedEvent<
 >;
 
 export type newArticlePriceEventFilter = TypedEventFilter<newArticlePriceEvent>;
+
+export interface newMemberTokenEventObject {
+  tokenId: BigNumber;
+}
+export type newMemberTokenEvent = TypedEvent<
+  [BigNumber],
+  newMemberTokenEventObject
+>;
+
+export type newMemberTokenEventFilter = TypedEventFilter<newMemberTokenEvent>;
 
 export interface TheSourceMarketPlace extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -462,7 +474,7 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    buyMemberToken(overrides?: CallOverrides): Promise<BigNumber>;
+    buyMemberToken(overrides?: CallOverrides): Promise<void>;
 
     getArticlePrice(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -547,6 +559,9 @@ export interface TheSourceMarketPlace extends BaseContract {
 
     "newArticlePrice(uint256)"(newPrice?: null): newArticlePriceEventFilter;
     newArticlePrice(newPrice?: null): newArticlePriceEventFilter;
+
+    "newMemberToken(uint256)"(tokenId?: null): newMemberTokenEventFilter;
+    newMemberToken(tokenId?: null): newMemberTokenEventFilter;
   };
 
   estimateGas: {

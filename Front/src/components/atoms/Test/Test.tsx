@@ -1,6 +1,6 @@
 import React from 'react'
 import { useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
-import theSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
+import theSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace/TheSourceMarketPlace.json"
 
 export default function Test() {
     /* 0x0165878A594ca255338adfa4d48449f69242Eb8F */

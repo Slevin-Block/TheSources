@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useContract, useContractEvent, useProvider } from 'wagmi'
-import { marketplace } from '../../../pages/_app'
-import TheSourceMemberToken from "../../../artifacts/contracts/TheSourceMemberToken.sol/TheSourceMemberToken.json"
+import TheSourceMemberToken from "../../../artifacts/contracts/TheSourceMemberToken/TheSourceMemberToken.json"
 import { BigNumber, Contract } from 'ethers'
 import { usePastEvents } from '../../../utils/usePastEvent'
 
