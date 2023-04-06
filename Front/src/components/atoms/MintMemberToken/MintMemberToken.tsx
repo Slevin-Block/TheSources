@@ -7,6 +7,7 @@ import { ContractsState } from '../../../store/ContractsState'
 import { useRecoilValue } from 'recoil'
 import { Action } from './Action'
 import { ViewToken } from './ViewToken'
+import { Gallery } from './Gallery'
 
 
 export default function MintMemberToken() {
@@ -24,7 +25,7 @@ export default function MintMemberToken() {
         watch: true,
     })
 
-    // READ THE NUMBER OF CURRENT USER
+    // READ THE NUMBER TOKEN OF CURRENT USER
     const { data: numberOfMemberToken } = useContractRead({
         address: contracts.marketPlace, abi: theSourceMarketPlace.abi,
         functionName: 'balanceOfMemberToken',
@@ -53,16 +54,24 @@ export default function MintMemberToken() {
         },
     })
 
-    useEffect(()=>{ isUpdating && setNewTokenId(0) }, [isUpdating])
+    useEffect(()=>{
+        isUpdating && setNewTokenId(0)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isUpdating])
     
 
     // UPDATE DATA
     useEffect(() => {
-        !!numberOfMemberToken && setPrice(ethers.utils.formatEther(BigNumber.from(currentMemberTokenPrice)))
+        !!currentMemberTokenPrice && setPrice(ethers.utils.formatEther(BigNumber.from(currentMemberTokenPrice)))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentMemberTokenPrice])
+
+    useEffect(() => {
         isUpdating && setIsUpdating(false)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [numberOfMemberToken])
 
+    console.log(!marketPlaceContract , !address , isUpdating)
     return (
         <>
             <div className={`block ${styles.block}`} >
@@ -87,7 +96,7 @@ export default function MintMemberToken() {
                 </div>
             </div>
             <div className={`block ${styles.block}`} >
-                
+                <Gallery />
             </div>
         </>
     )
