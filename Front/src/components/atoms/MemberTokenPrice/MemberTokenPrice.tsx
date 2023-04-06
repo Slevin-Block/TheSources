@@ -2,12 +2,12 @@ import { BigNumber, ethers } from 'ethers'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useDebounce } from 'usehooks-ts'
 import { useAccount, useBalance, useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
-import theSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
+/* import theSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json" */
 import styles from './MemberTokenPrice.module.css'
 import { marketplace } from "../../../pages/_app"
 
 export default function MemberTokenPrice() {
-    const [value, setValue] = useState(0)
+    /* const [value, setValue] = useState(0)
     const debouncedMemberTokenPrice = useDebounce(value, 500)
     const [isUpdating, setIsUpdating] = useState(false)
     const { address } = useAccount()
@@ -71,5 +71,6 @@ export default function MemberTokenPrice() {
                 Send
             </button>
         </form>
-    )
+    ) */
+    return <div>Coucou</div>
 }

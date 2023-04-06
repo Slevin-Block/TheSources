@@ -14,8 +14,8 @@ export default function Header() {
     return (
         <div className={styles.full}>
             <div className={styles.logos}>
-                <Image src='/img/TheSourceMap - lite.png' alt='TheSourceMap' className={styles.map} />
-                <Image src='/img/TheSourceLogo.png' alt='TheSourceLogo' className={styles.logo} />
+                <img src='/img/TheSourceMap - lite.png' alt='TheSourceMap' className={styles.map} />
+                <img src='/img/TheSourceLogo.png' alt='TheSourceLogo' className={styles.logo} />
                 <p className={styles.textLogo}>the</p><p className={styles.textLogoSup}>ource</p>
             </div>
             <div className={styles.infos} >
