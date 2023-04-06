@@ -9,31 +9,31 @@ import { ViewToken } from './ViewToken'
 
 export const Gallery = () => {
     const [myTokenIds, setMyTokenIds] = useState<number[]>([])
-    const {address} = useAccount()
+    const { address } = useAccount()
     const contracts = useRecoilValue(ContractsState)
     const provider = useProvider()
     const memberTokenContract = useContract({
-        address :contracts.memberToken,
-        abi : TheSourceMemberToken.abi,
-        signerOrProvider : provider,
+        address: contracts.memberToken,
+        abi: TheSourceMemberToken.abi,
+        signerOrProvider: provider,
     })
 
 
     useContractEvent({
-    address :contracts.memberToken,
-        abi : TheSourceMemberToken.abi,
-    eventName: 'Transfer',
-    listener(from, to, tokenId) {
-      if(to === address && tokenId && BigNumber.isBigNumber(tokenId)){
-        setMyTokenIds([...myTokenIds, tokenId.toNumber()])
-      }
-    },
-  })
+        address: contracts.memberToken,
+        abi: TheSourceMemberToken.abi,
+        eventName: 'Transfer',
+        listener(from, to, tokenId) {
+            if (to === address && tokenId && BigNumber.isBigNumber(tokenId)) {
+                setMyTokenIds([...myTokenIds, tokenId.toNumber()])
+            }
+        },
+    })
 
     const events = usePastEvents(memberTokenContract, "Transfer", ['from', 'to', 'tokenId'])
 
-    useEffect(()=>{
-        if (events.length > 0){
+    useEffect(() => {
+        if (events.length > 0) {
             const values = events.flatMap(event => event.to === address ? event.tokenId.toNumber() : [])
             setMyTokenIds(values)
         }
@@ -42,7 +42,7 @@ export const Gallery = () => {
     console.log(myTokenIds)
     return (
         <div>
-                {myTokenIds.map((tokenId, key) => <ViewToken key={key} tokenId={tokenId}/>)}
+            {myTokenIds.map((tokenId, key) => <ViewToken key={key} tokenId={tokenId} />)}
         </div>
     )
 }
