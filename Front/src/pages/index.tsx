@@ -1,18 +1,17 @@
 import Editor from '../components/_archives/Editor'
 import Header from '../components/blocs/Header/Header'
 import MyNavBar from '../components/blocs/MyNavBar/MyNavBar'
-import ArticleCreate from '../components/blocs/ArticleCreate/ArticleCreate'
-import { useAccount, useContractRead } from 'wagmi'
 import MemberTokenPrice from '../components/atoms/MemberTokenPrice/MemberTokenPrice'
 import MintMemberToken from '../components/atoms/MintMemberToken/MintMemberToken'
 import NFTPurchases from '../components/atoms/NFTPurchases/NFTPurchases'
 import { useRecoilValue, useRecoilState } from 'recoil'
 import { RegisterState } from '../store/RegisterState'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { RoutingState } from '../store/RoutingState'
 import { Home } from '../components/blocs/Home/Home'
 import { ContractsState } from '../store/ContractsState'
 import { BlockchainLink } from '../components/atoms/BlockchainLink/BlockchainLink'
+import NewArticle from '../components/blocs/NewArticle/NewArticle'
 
 
 function Page() {
@@ -44,11 +43,9 @@ function Page() {
             {contracts.ready ?
                 <div className='body'>
                     {(routing === 'home' && (<Home />))}
-                    {(routing === 'token' &&
-                        <MintMemberToken />
-                    )}
+                    {(routing === 'token' && <MintMemberToken /> )}
+                    {(routing === 'article' && <NewArticle /> )}
                         {/*
-                        <ArticleCreate />
                         <MemberTokenPrice />
                         <NFTPurchases />
                         */}

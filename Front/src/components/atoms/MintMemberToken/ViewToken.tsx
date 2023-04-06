@@ -41,7 +41,7 @@ export const ViewToken: FC<Props> = ({tokenId}) => {
             {src.length > 0 ?
                 <img src={src}/>
             :
-                <div className='blockSpinner' >
+                <div className='blockSpinner'>
                     <div className='spinner '></div>
                 </div>
             }

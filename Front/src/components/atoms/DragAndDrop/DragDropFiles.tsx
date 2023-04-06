@@ -6,9 +6,10 @@ import styles from "./DragDropFiles.module.css"
 interface Props {
   files: FileList | null;
   setFiles: Dispatch<React.SetStateAction<FileList | null>>;
+  type : "image" | "pdf";
 }
 
-const DragDropFiles: FC<Props> = ({files, setFiles}) => {
+const DragDropFiles: FC<Props> = ({files, setFiles, type}) => {
     const inputRef : MutableRefObject<HTMLInputElement | null> = useRef<HTMLInputElement>(null!);
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -31,7 +32,8 @@ const DragDropFiles: FC<Props> = ({files, setFiles}) => {
             </div>
         </>
     )
-
+    let format = "image/png, image/jpeg"
+    if (type === "pdf")  format = ".pdf"
     return (
         <>
             <div
@@ -46,7 +48,7 @@ const DragDropFiles: FC<Props> = ({files, setFiles}) => {
                     multiple
                     onChange={(event) => setFiles(event.target.files)}
                     hidden
-                    accept="image/png, image/jpeg"
+                    accept={format}
                     ref={inputRef}
                 />
             </div>

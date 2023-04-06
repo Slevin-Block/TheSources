@@ -6,6 +6,7 @@ import TheSourceMemberToken from "../../../artifacts/contracts/TheSourceMemberTo
 import { useAccount, useContract, useContractEvent, useProvider } from 'wagmi'
 import { BigNumber } from 'ethers'
 import { ViewToken } from './ViewToken'
+import styles from './MintMemberToken.module.css'
 
 export const Gallery = () => {
     const [myTokenIds, setMyTokenIds] = useState<number[]>([])
@@ -39,10 +40,11 @@ export const Gallery = () => {
         }
     }, [events])
 
-    console.log(myTokenIds)
     return (
-        <div>
-            {myTokenIds.map((tokenId, key) => <ViewToken key={key} tokenId={tokenId} />)}
+        <div className={styles.gallery}>
+            {myTokenIds.map((tokenId, key) => 
+                <div key={key} className={styles.boxImg}><ViewToken  tokenId={tokenId} /></div>
+            )}
         </div>
     )
 }

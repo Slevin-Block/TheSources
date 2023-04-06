@@ -36,6 +36,7 @@ contract TheSourceMemberToken is ERC721URIStorage, Ownable {
 
     Counters.Counter private _tokenIds;
     uint256 public royalties;  // on 1000 => 2.5% corresponds to 25
+    uint public supply;
     string base;
 
  
@@ -43,6 +44,7 @@ contract TheSourceMemberToken is ERC721URIStorage, Ownable {
         transferOwnership(_marketPlaceAddr);
         royalties = _royalties;
         base = baseURI_;
+        supply = 30;
     }
 
     function setBaseURI(string memory _newBaseURI) external onlyOwner{
@@ -60,6 +62,7 @@ contract TheSourceMemberToken is ERC721URIStorage, Ownable {
     event mint(address _to, uint256 tokenId);
 
     function safeMint( address _to) external onlyOwner returns (uint256) {
+        require(_tokenIds.current() < supply, "Every tokens minted !");
         _tokenIds.increment();
         uint256 tokenId = _tokenIds.current();
         _safeMint(_to, tokenId);

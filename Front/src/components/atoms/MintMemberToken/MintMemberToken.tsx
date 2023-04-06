@@ -71,7 +71,6 @@ export default function MintMemberToken() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [numberOfMemberToken])
 
-    console.log(!marketPlaceContract , !address , isUpdating)
     return (
         <>
             <div className={`block ${styles.block}`} >

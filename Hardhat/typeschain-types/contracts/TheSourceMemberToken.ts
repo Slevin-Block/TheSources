@@ -44,6 +44,7 @@ export interface TheSourceMemberTokenInterface extends utils.Interface {
     "safeTransferFrom(address,address,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setBaseURI(string)": FunctionFragment;
+    "supply()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -68,6 +69,7 @@ export interface TheSourceMemberTokenInterface extends utils.Interface {
       | "safeTransferFrom(address,address,uint256,bytes)"
       | "setApprovalForAll"
       | "setBaseURI"
+      | "supply"
       | "supportsInterface"
       | "symbol"
       | "tokenURI"
@@ -135,6 +137,7 @@ export interface TheSourceMemberTokenInterface extends utils.Interface {
     functionFragment: "setBaseURI",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "supply", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [PromiseOrValue<BytesLike>]
@@ -193,6 +196,7 @@ export interface TheSourceMemberTokenInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "supply", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -376,6 +380,8 @@ export interface TheSourceMemberToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    supply(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     supportsInterface(
       interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -471,6 +477,8 @@ export interface TheSourceMemberToken extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  supply(overrides?: CallOverrides): Promise<BigNumber>;
+
   supportsInterface(
     interfaceId: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -563,6 +571,8 @@ export interface TheSourceMemberToken extends BaseContract {
       _newBaseURI: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    supply(overrides?: CallOverrides): Promise<BigNumber>;
 
     supportsInterface(
       interfaceId: PromiseOrValue<BytesLike>,
@@ -707,6 +717,8 @@ export interface TheSourceMemberToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    supply(overrides?: CallOverrides): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -804,6 +816,8 @@ export interface TheSourceMemberToken extends BaseContract {
       _newBaseURI: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    supply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     supportsInterface(
       interfaceId: PromiseOrValue<BytesLike>,
