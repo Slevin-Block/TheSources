@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
+import TheSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace/TheSourceMarketPlace.json"
 import { useRecoilState } from 'recoil';
 import { ContractsState } from '../../../store/ContractsState';
 import { useContractRead } from 'wagmi';
-import TheSourceMarketPlace from "src/artifacts/contracts/TheSourceMarketPlace/TheSourceMarketPlace.json"
 import styles from './BlockchainLink.module.css'
 type ContractType = `0x${string}` | undefined;
 
