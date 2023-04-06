@@ -45,7 +45,10 @@ contract TheSourceMemberToken is ERC721URIStorage, Ownable {
         base = baseURI_;
     }
 
-
+    function setBaseURI(string memory _newBaseURI) external onlyOwner{
+        base = _newBaseURI;
+    }
+    
     function _baseURI() internal view override returns (string memory) {
         return base;
     }

@@ -2,7 +2,7 @@ const fs = require('fs');
 const Canvas = require('canvas');
 Canvas.registerFont('./MADE_TOMMY_Regular.otf', {family: 'tommy'});
 
-const NBRTOKEN = 10
+const NBRTOKEN = 30
 const IMG_DIR = '../img/';
 const JSON_DIR = '../json/';
 const IMG_EXTENSION = '.png';
@@ -30,9 +30,10 @@ async function drawtagOnImage(imagePath, tag, index) {
 
     // TAG
     ctx.font = 'bold 32px tommy';
-    ctx.fillStyle = '#000000';
-    ctx.textAlign = 'right';
-    ctx.fillText(`[${index.toString().padStart(8, '0')}]`, canvas.width * 0.95, canvas.height * 0.95);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    //ctx.fillText(`[${index.toString().padStart(8, '0')}]`, canvas.width * 0.95, canvas.height * 0.95);
+    ctx.fillText(`${index.toString().padStart(8, '0')}`, canvas.width / 2, canvas.height * 0.83);
 
     // INDEX
     /* ctx.font = '60px bold Arial';

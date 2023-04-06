@@ -30,6 +30,7 @@ import type {
 
 export interface TheSourceMarketPlaceInterface extends utils.Interface {
   functions: {
+    "articleContract()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "balanceOfMemberToken()": FunctionFragment;
     "buyArticle(uint256,uint256)": FunctionFragment;
@@ -37,11 +38,13 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     "getArticlePrice()": FunctionFragment;
     "getMemberTokenPrice()": FunctionFragment;
     "init(address,uint256,address,uint256)": FunctionFragment;
+    "memberTokenContract()": FunctionFragment;
     "mintArticle(uint256,string,string,string,uint256,uint256,string)": FunctionFragment;
     "myBalance()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setArticlePrice(uint256)": FunctionFragment;
+    "setBaseURIMemberToken(string)": FunctionFragment;
     "setMemberTokenPrice(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
@@ -49,6 +52,7 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "articleContract"
       | "balanceOf"
       | "balanceOfMemberToken"
       | "buyArticle"
@@ -56,16 +60,22 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
       | "getArticlePrice"
       | "getMemberTokenPrice"
       | "init"
+      | "memberTokenContract"
       | "mintArticle"
       | "myBalance"
       | "owner"
       | "renounceOwnership"
       | "setArticlePrice"
+      | "setBaseURIMemberToken"
       | "setMemberTokenPrice"
       | "transferOwnership"
       | "withdraw"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "articleContract",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "balanceOf",
     values: [PromiseOrValue<string>]
@@ -100,6 +110,10 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "memberTokenContract",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "mintArticle",
     values: [
       PromiseOrValue<BigNumberish>,
@@ -122,6 +136,10 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "setBaseURIMemberToken",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setMemberTokenPrice",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
@@ -134,6 +152,10 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "articleContract",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "balanceOfMemberToken",
@@ -154,6 +176,10 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "init", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "memberTokenContract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "mintArticle",
     data: BytesLike
   ): Result;
@@ -165,6 +191,10 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setArticlePrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setBaseURIMemberToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -261,6 +291,8 @@ export interface TheSourceMarketPlace extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    articleContract(overrides?: CallOverrides): Promise<[string]>;
+
     balanceOf(
       user: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -290,6 +322,8 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    memberTokenContract(overrides?: CallOverrides): Promise<[string]>;
+
     mintArticle(
       _memberTokenId: PromiseOrValue<BigNumberish>,
       _title: PromiseOrValue<string>,
@@ -314,6 +348,11 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setBaseURIMemberToken(
+      _newBase: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setMemberTokenPrice(
       _newPrice: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -329,6 +368,8 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
+
+  articleContract(overrides?: CallOverrides): Promise<string>;
 
   balanceOf(
     user: PromiseOrValue<string>,
@@ -359,6 +400,8 @@ export interface TheSourceMarketPlace extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  memberTokenContract(overrides?: CallOverrides): Promise<string>;
+
   mintArticle(
     _memberTokenId: PromiseOrValue<BigNumberish>,
     _title: PromiseOrValue<string>,
@@ -383,6 +426,11 @@ export interface TheSourceMarketPlace extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setBaseURIMemberToken(
+    _newBase: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setMemberTokenPrice(
     _newPrice: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -399,6 +447,8 @@ export interface TheSourceMarketPlace extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    articleContract(overrides?: CallOverrides): Promise<string>;
+
     balanceOf(
       user: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -426,6 +476,8 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    memberTokenContract(overrides?: CallOverrides): Promise<string>;
+
     mintArticle(
       _memberTokenId: PromiseOrValue<BigNumberish>,
       _title: PromiseOrValue<string>,
@@ -445,6 +497,11 @@ export interface TheSourceMarketPlace extends BaseContract {
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setBaseURIMemberToken(
+      _newBase: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -493,6 +550,8 @@ export interface TheSourceMarketPlace extends BaseContract {
   };
 
   estimateGas: {
+    articleContract(overrides?: CallOverrides): Promise<BigNumber>;
+
     balanceOf(
       user: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -522,6 +581,8 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    memberTokenContract(overrides?: CallOverrides): Promise<BigNumber>;
+
     mintArticle(
       _memberTokenId: PromiseOrValue<BigNumberish>,
       _title: PromiseOrValue<string>,
@@ -546,6 +607,11 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setBaseURIMemberToken(
+      _newBase: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setMemberTokenPrice(
       _newPrice: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -563,6 +629,8 @@ export interface TheSourceMarketPlace extends BaseContract {
   };
 
   populateTransaction: {
+    articleContract(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     balanceOf(
       user: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -596,6 +664,10 @@ export interface TheSourceMarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    memberTokenContract(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     mintArticle(
       _memberTokenId: PromiseOrValue<BigNumberish>,
       _title: PromiseOrValue<string>,
@@ -617,6 +689,11 @@ export interface TheSourceMarketPlace extends BaseContract {
 
     setArticlePrice(
       _newPrice: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setBaseURIMemberToken(
+      _newBase: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

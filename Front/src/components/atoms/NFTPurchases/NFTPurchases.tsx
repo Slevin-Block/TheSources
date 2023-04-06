@@ -22,12 +22,12 @@ export default function NFTPurchases() {
         abi: TheSourceMemberToken.abi,
         signerOrProvider: provider
     })
-    const events = usePastEvents(contract, 'Transfer')
-
+    const events = usePastEvents(contract, 'Transfer', ['to', 'from', 'id'])
+    console.log(events)
     return (
         <div>
             {!!events &&
-                events.map((event, key) => <li key={key}>{event[1]} {parseInt(BigNumber.from(event[2]).toString())}</li>)
+                events.map((event, key) => <li key={key}>{event.from} {parseInt(BigNumber.from(event.id).toString())}</li>)
             }
         </div>
     )

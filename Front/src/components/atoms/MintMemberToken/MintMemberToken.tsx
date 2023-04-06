@@ -4,7 +4,8 @@ import { useDebounce } from 'usehooks-ts'
 import { useAccount, useBalance, useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
 import theSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
 import styles from './MintMemberToken.module.css'
-import { marketplace } from "../../../pages/_app"
+import { ContractsState } from '../../../store/ContractsState'
+import { useRecoilValue } from 'recoil'
 
 
 export default function MintMemberToken() {
@@ -13,14 +14,18 @@ export default function MintMemberToken() {
     const [isUpdating, setIsUpdating] = useState(false)
     const { address } = useAccount()
     const { data: balance } = useBalance({ address });
+    const contracts = useRecoilValue(ContractsState)
 
+    // READ THE CURRENT PRICE OF MEMBER TOKEN
     const { data: currentMemberTokenPrice } = useContractRead({
-        address: marketplace, abi: theSourceMarketPlace.abi,
+        address: contracts.marketPlace, abi: theSourceMarketPlace.abi,
         functionName: 'getMemberTokenPrice',
         watch: true,
     })
+
+    // READ THE NUMBER OF CURRENT USER
     const { data: numberOfMemberToken } = useContractRead({
-        address: marketplace, abi: theSourceMarketPlace.abi,
+        address: contracts.marketPlace, abi: theSourceMarketPlace.abi,
         functionName: 'balanceOfMemberToken',
         watch: true,
         overrides: {
@@ -28,8 +33,9 @@ export default function MintMemberToken() {
         },
     })
 
+    // PREPARE TRANSACTION TO MINT A NEW TOKEN MEMBER
     const { config: configBuyMemberToken } = usePrepareContractWrite({
-        address: marketplace,
+        address: contracts.marketPlace,
         abi: theSourceMarketPlace.abi,
         functionName: 'buyMemberToken',
         args: [],
@@ -39,9 +45,12 @@ export default function MintMemberToken() {
         },
         enabled: Boolean(debouncedNumberMemberToken)
     })
+    
+    // TRANSACTION FUNCTION
     const { write, data } = useContractWrite(configBuyMemberToken)
     const { isLoading } = useWaitForTransaction({ hash: data?.hash })
 
+    // UPDATE DATA
     useEffect(() => { isLoading && setIsUpdating(true) },[isLoading])
     useEffect(() => {
         !!numberOfMemberToken && setValue(parseInt(BigNumber.from(numberOfMemberToken).toString()))

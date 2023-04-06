@@ -10,7 +10,6 @@ import { WagmiConfig } from 'wagmi'
 import { client } from '../components/atoms/Connection/wagmi'
 import { RecoilRoot } from 'recoil';
 import '../store/configRecoil';
-export const marketplace = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 
 function App({ Component, pageProps }: AppProps) {
     const [mounted, setMounted] = React.useState(false)

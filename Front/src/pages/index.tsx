@@ -1,32 +1,65 @@
 import Editor from '../components/_archives/Editor'
 import Header from '../components/blocs/Header/Header'
+import MyNavBar from '../components/blocs/MyNavBar/MyNavBar'
 import ArticleCreate from '../components/blocs/ArticleCreate/ArticleCreate'
-import styles from "./index.module.css"
-import { useAccount } from 'wagmi'
+import { useAccount, useContractRead } from 'wagmi'
 import MemberTokenPrice from '../components/atoms/MemberTokenPrice/MemberTokenPrice'
 import MintMemberToken from '../components/atoms/MintMemberToken/MintMemberToken'
-import Test from '../components/atoms/Test/Test'
 import NFTPurchases from '../components/atoms/NFTPurchases/NFTPurchases'
-
+import { useRecoilValue, useRecoilState } from 'recoil'
+import { RegisterState } from '../store/RegisterState'
+import { useEffect, useState } from 'react'
+import { RoutingState } from '../store/RoutingState'
+import { Home } from '../components/blocs/Home/Home'
+import { ContractsState } from '../store/ContractsState'
+import { BlockchainLink } from '../components/atoms/BlockchainLink/BlockchainLink'
 
 
 function Page() {
+    const [routing, setRouting] = useRecoilState(RoutingState)
+    const [contracts, setContracts] = useRecoilState(ContractsState)
+    const isRegistred = useRecoilValue(RegisterState)
+    const mainContractIsLoaded = contracts.marketPlace !== '0x'
+    /* Routing */
+    useEffect(()=>{ (!isRegistred || !contracts.ready) && setRouting('home') }, [isRegistred, contracts.ready])
 
-    const { isConnected } = useAccount()
-
-
-
+    /* Load memberTokenContract */
+    useEffect(()=>{
+        (async () => {
+            const response = await fetch('/api/marketplace', { method: "GET"})
+            const data = await response.json()
+            setContracts({...contracts, marketPlace : data.address})
+        })()
+    },[])
+    
     return (
-        <div className={styles.full}>
-            <div className={styles.header}>
+        <div className='full'>
+            <div className='header'>
                 <Header />
+                {(mainContractIsLoaded && !contracts.ready) && <BlockchainLink/>}
             </div>
-            {isConnected && <div className={styles.body}>
-                {/* <ArticleCreate /> */}
-                <MemberTokenPrice />
-                <MintMemberToken />
-                <NFTPurchases />
-            </div>}
+            {isRegistred &&
+                <MyNavBar></MyNavBar>
+            }
+            {contracts.ready ?
+                <div className='body'>
+                    {(routing === 'home' && (<Home />))}
+                    {(routing === 'token' &&
+                        <MintMemberToken />
+                    )}
+                        {/*
+                        <ArticleCreate />
+                        <MemberTokenPrice />
+                        <NFTPurchases />
+                        */}
+                </div>
+
+            :
+                <div className='body'>
+                    Loading ...
+                </div>
+            
+            }
         </div>
     )
 }

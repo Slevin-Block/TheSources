@@ -1,14 +1,14 @@
 import React from 'react'
-import { useRecoilValue } from 'recoil'
-import { UserState } from '../../../store/UserState'
 import { minifyStr } from '../../../utils/minifyStr'
 import styles from './Header.module.css'
 import Connection from '../../atoms/Connection/Connection'
 import { useAccount, useNetwork, useBalance } from 'wagmi'
-import Image from 'next/image'
+import { useRecoilValue } from 'recoil'
+import { ContractsState } from '../../../store/ContractsState'
 
 export default function Header() {
     const { isConnected, address } = useAccount()
+    const contracts = useRecoilValue(ContractsState)
     const {data : balance} = useBalance({ address, watch: true, });
     const { chain } = useNetwork()
     return (
@@ -27,6 +27,7 @@ export default function Header() {
                         </div>
                         <div className={styles.addr}>
                             <p>{chain?.name ? chain?.name : ''}</p>
+                            {contracts.ready && <p>Ok</p>}
                         </div>
                         <div className={styles.addr}>
                             <p>{balance ? `${balance?.formatted.slice(0,10)}... ${balance.symbol}` : ''}</p>

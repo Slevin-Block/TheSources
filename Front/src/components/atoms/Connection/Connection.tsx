@@ -3,10 +3,12 @@ import { useAccount, useConnect, useDisconnect, useNetwork, useSignMessage } fro
 import { useSignIn } from './useSignIn'
 import { MetaMask, WalletConnect } from '../svgs'
 import styles from './Connection.module.css'
+import { useRecoilState } from 'recoil'
+import { RegisterState } from '../../../store/RegisterState'
 
 export default function Connection() {
 
-    const [isRegistred, setIsRegistred] = useState(false)
+    const [isRegistred, setIsRegistred] = useRecoilState(RegisterState)
     const { isConnected, address } = useAccount()
     const { disconnect } = useDisconnect()
     const { connect, connectors, isLoading, pendingConnector } = useConnect()

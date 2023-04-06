@@ -1,17 +1,19 @@
 import { ethers } from "hardhat";
-import fs from 'fs'
-
+import { TheSourceMarketPlace } from "../typeschain-types";
 
 const ROYALTIES = 250000000000000000n;
 const BEMemberPRICE = 250000000000000000n;
 const MINTARTICLEPRICE = 250000000000000000n;
-const BASE_URI_MEMBERTOKEN = "https://gateway.pinata.cloud/ipfs/QmQ41vE6evX9ysRiW3PJzf4UTeV5V6QTYcHCc6EcG3qtKa/"
 const title = "Test";
 const description = "My description"
 const authorName = "My and myself"
 const supply = 100
-const price = 100000000000000000n // 0.1 ether
+const price = 10000000000000000n // 0.01 ether
 const URI = "http://whatever/"
+
+
+const BASE_URI_MEMBERTOKEN = "https://gateway.pinata.cloud/ipfs/QmagrTn3yhhctmYou7WmMx61eQi47fDCVugZgtn59XEZHK/"
+const initialMarketPlaceAddr = ''//'0x5FbDB2315678afecb367f032d93F642f64180aa3'
 
 async function main() {
 
@@ -23,15 +25,22 @@ async function main() {
 
     // MARKET PLACE DEPLOYEMENT
     const TheSourceMarketPlace = await ethers.getContractFactory("TheSourceMarketPlace");
-    const theSourceMarketPlace = await TheSourceMarketPlace.deploy();
-    await theSourceMarketPlace.deployed();
+    let theSourceMarketPlace : TheSourceMarketPlace
+    if (initialMarketPlaceAddr){
+        theSourceMarketPlace = await TheSourceMarketPlace.attach(initialMarketPlaceAddr);
+    }else {
+        theSourceMarketPlace = await TheSourceMarketPlace.deploy();
+        await theSourceMarketPlace.deployed();
+    }
 
 
+    console.log(" ")
     console.log("---------------------------------------------------------------------")
     console.log(" ")
     console.log(`TheSourceMarketPlace has been deployed to address ${theSourceMarketPlace.address}`)
     console.log(" ")
     console.log("---------------------------------------------------------------------")
+    console.log(" ")
 
 
     // MEMBER TOKEN DEPLOYEMENT

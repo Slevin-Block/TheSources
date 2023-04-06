@@ -57,6 +57,43 @@ p {
     color : var(--text);
 }
 
+
+.full{
+    height : 100vh;
+    width : 100vw;
+    display: flex;
+    flex-direction : column;
+}
+
+.header{
+    height : 15vh;
+    width : 100vw;
+    display: flex;
+}
+
+.body{
+    min-height : 78vh;
+    max-eight : 85vh;
+    width : 100vw;
+    display: flex;
+    align-items : center;
+    justify-content : center;
+    gap : 3rem;
+    flex-wrap : wrap;
+}
+
+.navbar{
+    display : flex;
+    flex-direction : row ;
+    justify-content :space-evenly;
+    align-items : center;
+
+    height : 7vh;
+    width : 100%
+}
+
+
+
 .Metamask, .WalletConnect{
     width : 48px;
     height : 48px;

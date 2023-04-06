@@ -31,8 +31,8 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
     mapping(address => uint256) balances;
 
 /* CONTRACTS */
-    TheSourceMemberToken private memberTokenContract;
-    TheSourceArticle private articleContract;
+    TheSourceMemberToken public memberTokenContract;
+    TheSourceArticle public articleContract;
 
 /* STATE */
     uint256 private memberTokenPrice;
@@ -68,7 +68,12 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 
 *************************************************************/
 
-/*  PRICE OF A MEMBER TOKEN*/
+/*  BASURI */
+    function setBaseURIMemberToken(string memory _newBase) public onlyOwner {
+        memberTokenContract.setBaseURI(_newBase) ;
+    }
+
+/*  PRICE OF A MEMBER TOKEN */
     function getMemberTokenPrice() public view returns (uint256) {
         return memberTokenPrice;
     }

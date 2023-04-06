@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Input, Text } from '@chakra-ui/react'
 import React, { useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil';
-import { UserState } from '../../../store/UserState';
+import { UserState } from '../../../store/RegisterState';
 import { useToast } from '@chakra-ui/react'
 import DragDropFiles from '../../atoms/DragAndDrop/DragDropFiles'
 
