@@ -7,9 +7,10 @@ interface Props {
   files: FileList | null;
   setFiles: Dispatch<React.SetStateAction<FileList | null>>;
   type : "image" | "pdf";
+  disabled : boolean;
 }
 
-const DragDropFiles: FC<Props> = ({files, setFiles, type}) => {
+const DragDropFiles: FC<Props> = ({files, setFiles, type, disabled = false}) => {
     const inputRef : MutableRefObject<HTMLInputElement | null> = useRef<HTMLInputElement>(null!);
 
     const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -26,7 +27,11 @@ const DragDropFiles: FC<Props> = ({files, setFiles, type}) => {
             <div className={styles.uploads}>
                 <p>{minifyStr(Array.from(files)[0].name)}</p>
                 <div className="actions">
-                    <button onClick={() => setFiles(null)}><Cancel className={`${styles.iconButton} ${styles.cancel}`}/></button>
+                    <button
+                        onClick={() => setFiles(null)}
+                        className={styles.neutral}
+                        disabled={disabled}
+                    ><Cancel className={`${styles.iconButton} ${styles.cancel}`}/></button>
                     {/* <button onClick={handleUpload}><Validate className={`${styles.iconButton} ${styles.validate}`}/></button> */}
                 </div>
             </div>
@@ -37,7 +42,7 @@ const DragDropFiles: FC<Props> = ({files, setFiles, type}) => {
     return (
         <>
             <div
-                className={styles.dropzone}
+                className={`${styles.dropzone} ${disabled ? styles.disabled : ''}`}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onClick={() => inputRef.current?.click()}
@@ -50,6 +55,7 @@ const DragDropFiles: FC<Props> = ({files, setFiles, type}) => {
                     hidden
                     accept={format}
                     ref={inputRef}
+                    disabled={disabled}
                 />
             </div>
         </>

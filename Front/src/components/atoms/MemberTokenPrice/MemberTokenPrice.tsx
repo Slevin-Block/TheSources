@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useDebounce } from 'usehooks-ts'
 import { useAccount, useBalance, useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
-import theSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace/TheSourceMarketPlace.json"
+import theSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
 import styles from './MemberTokenPrice.module.css'
 import { useRecoilState } from 'recoil'
 import { ContractsState } from '../../../store/ContractsState'

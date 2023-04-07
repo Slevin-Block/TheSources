@@ -17,6 +17,11 @@
     background-color : rgba(0,0,0,0.1);
 }
 
+.disabled{
+    background-color : rgba(0,0,0,0.1) !important;
+    cursor: default;
+}
+
 
 .icon{
     font-size : 2rem;
@@ -32,4 +37,12 @@
 
 .cancel{
     color : red;
+}
+.neutral{
+    border : none;
+    background : transparent;
+}
+.neutral:hover{
+    border : none;
+    background : var(--onbackground);
 }

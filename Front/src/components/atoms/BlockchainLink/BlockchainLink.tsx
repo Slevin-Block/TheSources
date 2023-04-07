@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import TheSourceMarketPlace from '../../../artifacts/contracts/TheSourceMarketPlace/TheSourceMarketPlace.json'
+import TheSourceMarketPlace from '../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json'
 import { useRecoilState } from 'recoil';
 import { ContractsState } from '../../../store/ContractsState';
 import { useContractRead } from 'wagmi';

@@ -20,6 +20,7 @@
     --onbackground-sup : #B8B4B0;
     --text : #383736;
     --text-light : #787673;
+    --error : red;
 }
 
 * {

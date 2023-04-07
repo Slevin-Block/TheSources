@@ -1,4 +1,5 @@
 .container{
+    position : relative;
     display : flex;
     flex-direction : column;
     align-items : center;
@@ -14,4 +15,33 @@
     display : flex;
     justify-content : space-around;
     width : 100%;
+}
+
+.field{
+    display : flex;
+    flex-direction : column;
+    gap : 0.5rem;
+}
+
+.spinner{
+    position : absolute;
+    top : 0;
+    left : 0;
+    height : 48px;
+    width : 48px;
+}
+.spinnerAction{
+    position : relative;
+    height : 48px;
+    width : 48px;
+}
+
+.error {
+    color : red;
+    position : absolute;
+    top : 0.2rem;
+    right : 0.2rem;
+    text-align : right;
+    font-size : 0.7rem;
+    transition : all 0.5s;
 }

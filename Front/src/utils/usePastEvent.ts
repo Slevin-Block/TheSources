@@ -1,7 +1,7 @@
 import { Contract } from "ethers"
 import { useEffect, useState } from "react"
 
-export const usePastEvents = (contract: Contract | null, eventName: string, schema: string[] = []) => {
+export const usePastEvents = (contract: Contract | null, eventName: string, address :`0x${string}` | undefined, schema: string[] = []) => {
     const [events, setEvents] = useState<any[]>([])
 
     useEffect(() => {
@@ -42,7 +42,7 @@ export const usePastEvents = (contract: Contract | null, eventName: string, sche
             console.log("contract invalid")
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [contract, eventName])
+    }, [contract, eventName, address])
 
     return events
 }

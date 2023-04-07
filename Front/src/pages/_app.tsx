@@ -1,6 +1,7 @@
 import '../styles/global.css';
-import '../styles/button.css';
 import '../styles/input.css';
+import '../styles/select.css';
+import '../styles/button.css';
 import type { AppProps } from 'next/app'
 import NextHead from 'next/head'
 import * as React from 'react'
