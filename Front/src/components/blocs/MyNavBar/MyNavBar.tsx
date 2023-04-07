@@ -9,7 +9,7 @@ export default function NabBar() {
         <MyLink field='token'>      Begin Member</MyLink>
         <MyLink field='article'>    Mint Article </MyLink>
         <MyLink field='list'>       My Articles     </MyLink>
-        <MyLink field='sell'>       Sell Article </MyLink>
+        <MyLink field='buy'>       Buy Article </MyLink>
     </div>
   )
 }

@@ -12,7 +12,7 @@ import { Home } from '../components/blocs/Home/Home'
 import { ContractsState } from '../store/ContractsState'
 import { BlockchainLink } from '../components/atoms/BlockchainLink/BlockchainLink'
 import NewArticle from '../components/blocs/NewArticle/NewArticle'
-import { SellArticle } from '../components/blocs/SellArticle/SellArticle'
+import { BuyArticle } from '../components/blocs/BuyArticle/BuyArticle'
 
 
 function Page() {
@@ -31,7 +31,7 @@ function Page() {
             setContracts({...contracts, marketPlace : data.address})
         })()
     },[])
-    
+    console.log(routing)
     return (
         <div className='full'>
             <div className='header'>
@@ -46,11 +46,7 @@ function Page() {
                     {(routing === 'home' && (<Home />))}
                     {(routing === 'token' && <MintMemberToken /> )}
                     {(routing === 'article' && <NewArticle /> )}
-                    {(routing === 'sell' && <SellArticle /> )}
-                        {/*
-                        <MemberTokenPrice />
-                        <NFTPurchases />
-                        */}
+                    {(routing === 'buy' && <BuyArticle /> )}
                 </div>
 
             :

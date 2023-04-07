@@ -1,29 +1,34 @@
-import React, { useEffect, useState } from 'react'
-import { useAccount, useContract, useContractRead, useProvider } from 'wagmi'
+import React, { FC, useEffect, useState } from 'react'
+import styles from './Home.module.css'
+import { useRecoilValue } from 'recoil'
+import { ContractsState } from '../../../store/ContractsState'
+import { useAccount, useContract, useProvider } from 'wagmi';
 import TheSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
 import TheSourceArticle from "../../../artifacts/contracts/TheSourceArticle.sol/TheSourceArticle.json"
 import { usePastEvents } from '../../../utils/usePastEvent'
-import { useRecoilValue } from 'recoil'
-import { ContractsState } from '../../../store/ContractsState'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers';
+import { Card } from '../../atoms/Card/Card';
 
+interface Props {
 
-type Article = [] | {
-    title : string;
-    description : string;
-    author : string;
-    authorAddr : `0x${string}`;
-    qty : number;
-    price : number | string;
-}[];
+}
+type Article = {
+    title: string;
+    description: string;
+    authorName: string;
+    authorAddress: `0x${string}`;
+    supply: number | BigNumber;
+    price: number | string | BigNumber;
+    cover?: string;
+    article?: string;
+    id? : number;
+};
 
-
-
-export const Home = () => {
+export const Home: FC<Props> = () => {
     const contracts = useRecoilValue(ContractsState)
-    const [articles, setArticles] = useState<Article>([])
+    const [articles, setArticles] = useState<Article[] | []>([])
     const provider = useProvider()
-    const {address} = useAccount()
+    const { address } = useAccount()
 
     const marketPlaceContract = useContract({
         address: contracts.marketPlace,
@@ -37,42 +42,37 @@ export const Home = () => {
     })
 
     const events = usePastEvents(marketPlaceContract, 'createArticle', address, ['author', 'memberTokenId', 'articleId'])
-
-
-
     useEffect(() => {
         if (articleContract && events) {
             (async () => {
-                let final
-                const articleIds = events.map(event => event.articleId.toNumber())
-                const res = articleIds.map(async (id) => await articleContract.getArticle(id))
-                Promise.all(res).then(articles => {
-                    const final = articles.map(article => {return {
-                        title : article.title,
-                        description : article.description,
-                        author : article.authorName,
-                        authorAddr : article.authorAddress,
-                        qty : article.supply.toNumber(),
-                        price : ethers.utils.formatEther(BigNumber.from(article.price)),
-                    }})
+                try {
+                    const articleIds = events.map(event => event.articleId.toNumber())
+                    const [articles, uris] = await Promise.all([
+                        Promise.all(articleIds.map(async (id) => await articleContract.getArticle(id))),
+                        Promise.all(articleIds.map(async (id) => await articleContract.uri(id)))
+                            .then(uris =>
+                                Promise.all(uris.map(async (uri) =>
+                                    await fetch(uri)
+                                        .then(res => res.json())
+                                )))
+                    ])
+                    const final = articles
+                        .map((article, index) => { return { ...article, id : index+1, cover: uris[index].image, article: `${uris[index].attributes[5].value}/${uris[index].attributes[3].value}` } })
+                        .filter(article => article.supply > 0)
+                        .reverse()
+                        .slice(0,4)
                     setArticles(final)
-                }).catch(error => {
-                    console.error(error);
-                });
+                }catch(err){
+                    console.log(err)
+                }
             })()
-
         }
     }, [articleContract, events])
 
+    console.log(articles)
     return (
-        <div>
-            {articles.length > 0 &&
-                <ul>
-                    {articles.slice(-3).reverse().map((article, key) => <li key={key}>{`${article.title} ${article.author} ${article.price}`}</li>)}
-                </ul>
-            
-            }
-        
+        <div className={styles.listing}>
+            {articles.length > 0 && articles.map((article, index) => <Card key={index} article={article}/>)}
         </div>
     )
 }

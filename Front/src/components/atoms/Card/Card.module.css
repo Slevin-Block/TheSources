@@ -1,0 +1,39 @@
+.card{
+    display: flex;
+    flex-direction : row;
+    width : 25rem;
+    height : 10rem;
+    border : 1px solid var(--secondary);
+    border-radius : 0.4rem;
+    justify-content : space-between;
+    align-items : center;
+}
+
+.cover{
+    display : flex;
+    justify-content : center;
+    border-radius : 0.4rem 0 0 0.4rem;
+    border-right : 1px solid var(--secondary);
+    height : 100%;
+    max-width : 30%;
+    object-fit: contain;
+    overflow : hidden;
+}
+
+.infos{
+    display : flex;
+    flex-direction : column;
+    justify-content : space-between;
+    align-items : center;
+    height : 100%;
+    width : 70%;
+    padding : 0.4rem;
+}
+.infos > * {
+    padding :0;
+}
+
+.subInfos{
+    display : flex;
+    gap : 1rem;
+}

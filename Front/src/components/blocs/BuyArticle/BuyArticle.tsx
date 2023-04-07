@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import styles from './SellArticle.module.css'
+import styles from './BuyArticle.module.css'
 import { useRecoilValue } from 'recoil'
 import { ContractsState } from '../../../store/ContractsState'
 import { useAccount, useContract, useProvider } from 'wagmi';
@@ -24,7 +24,7 @@ type Article = {
     id? : number;
 };
 
-export const SellArticle: FC<Props> = () => {
+export const BuyArticle: FC<Props> = () => {
     const contracts = useRecoilValue(ContractsState)
     const [articles, setArticles] = useState<Article[] | []>([])
     const provider = useProvider()
@@ -67,7 +67,7 @@ export const SellArticle: FC<Props> = () => {
 
     console.log(articles)
     return (
-        <div>
+        <div className={styles.listing}>
             {articles.length > 0 && articles.map((article, index) => <Card key={index} article={article}/>)}
         </div>
     )

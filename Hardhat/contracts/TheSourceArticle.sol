@@ -64,7 +64,7 @@ contract TheSourceArticle is ERC1155URIStorage, Ownable {
     ) public onlyOwner returns (uint256) {
         _articleIdCounter.increment();
         uint256 articleId = _articleIdCounter.current();
-        string memory description_ = limitChars(_description, 15);
+        string memory description_ = limitChars(_description, 20);
         articles.push(
             Article(
                 _title,
