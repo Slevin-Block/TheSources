@@ -2,8 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { TheSourceArticle } from "./TheSourceArticle";
-export type { TheSourceArticle } from "./TheSourceArticle";
 export type { TheSourceMarketPlace } from "./TheSourceMarketPlace";
-export type { TheSourceMarketPlace } from "./TheSourceMarketPlace";
-export type { TheSourceMemberToken } from "./TheSourceMemberToken";
 export type { TheSourceMemberToken } from "./TheSourceMemberToken";

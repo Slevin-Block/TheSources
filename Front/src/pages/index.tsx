@@ -12,6 +12,7 @@ import { Home } from '../components/blocs/Home/Home'
 import { ContractsState } from '../store/ContractsState'
 import { BlockchainLink } from '../components/atoms/BlockchainLink/BlockchainLink'
 import NewArticle from '../components/blocs/NewArticle/NewArticle'
+import { SellArticle } from '../components/blocs/SellArticle/SellArticle'
 
 
 function Page() {
@@ -45,6 +46,7 @@ function Page() {
                     {(routing === 'home' && (<Home />))}
                     {(routing === 'token' && <MintMemberToken /> )}
                     {(routing === 'article' && <NewArticle /> )}
+                    {(routing === 'sell' && <SellArticle /> )}
                         {/*
                         <MemberTokenPrice />
                         <NFTPurchases />

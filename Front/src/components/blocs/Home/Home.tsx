@@ -8,7 +8,7 @@ import { ContractsState } from '../../../store/ContractsState'
 import { BigNumber, ethers } from 'ethers'
 
 
-type BookList = [] | {
+type Article = [] | {
     title : string;
     description : string;
     author : string;
@@ -21,7 +21,7 @@ type BookList = [] | {
 
 export const Home = () => {
     const contracts = useRecoilValue(ContractsState)
-    const [articles, setArticles] = useState<BookList>([])
+    const [articles, setArticles] = useState<Article>([])
     const provider = useProvider()
     const {address} = useAccount()
 

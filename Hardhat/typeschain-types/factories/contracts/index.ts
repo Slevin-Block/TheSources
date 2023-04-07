@@ -2,8 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export { TheSourceArticle__factory } from "./TheSourceArticle__factory";
-export { TheSourceArticle__factory } from "./TheSourceArticle__factory";
 export { TheSourceMarketPlace__factory } from "./TheSourceMarketPlace__factory";
-export { TheSourceMarketPlace__factory } from "./TheSourceMarketPlace__factory";
-export { TheSourceMemberToken__factory } from "./TheSourceMemberToken__factory";
 export { TheSourceMemberToken__factory } from "./TheSourceMemberToken__factory";

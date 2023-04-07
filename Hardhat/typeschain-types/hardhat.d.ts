@@ -69,21 +69,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TheSourceArticle__factory>;
     getContractFactory(
-      name: "TheSourceArticle",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TheSourceArticle__factory>;
-    getContractFactory(
       name: "TheSourceMarketPlace",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TheSourceMarketPlace__factory>;
-    getContractFactory(
-      name: "TheSourceMarketPlace",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TheSourceMarketPlace__factory>;
-    getContractFactory(
-      name: "TheSourceMemberToken",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TheSourceMemberToken__factory>;
     getContractFactory(
       name: "TheSourceMemberToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -160,25 +148,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.TheSourceArticle>;
     getContractAt(
-      name: "TheSourceArticle",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.TheSourceArticle>;
-    getContractAt(
       name: "TheSourceMarketPlace",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.TheSourceMarketPlace>;
-    getContractAt(
-      name: "TheSourceMarketPlace",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.TheSourceMarketPlace>;
-    getContractAt(
-      name: "TheSourceMemberToken",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.TheSourceMemberToken>;
     getContractAt(
       name: "TheSourceMemberToken",
       address: string,

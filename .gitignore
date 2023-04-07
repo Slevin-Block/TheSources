@@ -2,3 +2,4 @@ my-app/
 markdown/
 archives/
 ./**/.env
+.vscode

@@ -81,7 +81,7 @@ async function main() {
 
 
     // MINT A ARTICLE
-    await theSourceMarketPlace.connect(journalist).mintArticle(
+    /* await theSourceMarketPlace.connect(journalist).mintArticle(
                     1, title, description, authorName, supply, price, URI,
                     { value: MINTARTICLEPRICE })
 
@@ -92,7 +92,7 @@ async function main() {
     const MT_owner= await theSourceMarketPlace.connect(owner).balanceOfMemberToken()
 
     console.log("Nombre de token de membre du journaliste : ", MT_journalist)
-    console.log("Nombre de token de membre du owner : ", MT_owner)
+    console.log("Nombre de token de membre du owner : ", MT_owner) */
     // BUY A ARTICLE
 
     /* await theSourceMarketPlace.connect(seller).buyArticle(1,1, {value : price})
