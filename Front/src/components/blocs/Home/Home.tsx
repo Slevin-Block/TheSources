@@ -69,7 +69,6 @@ export const Home: FC<Props> = () => {
         }
     }, [articleContract, events])
 
-    console.log(articles)
     return (
         <div className={styles.listing}>
             {articles.length > 0 && articles.map((article, index) => <Card key={index} article={article}/>)}

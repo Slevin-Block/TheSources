@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { ContractsState } from '../../../store/ContractsState';
-import theSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
+import TheSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
 import { BigNumber, ethers } from 'ethers';
 import styles from './NewArticle.module.css'
 import { RoutingState } from '../../../store/RoutingState';
@@ -34,7 +34,7 @@ export const Action: FC<Props> = ({ article, setAction, value}) => {
     const { address } = useAccount()
     const { config } = usePrepareContractWrite({
         address: contracts.marketPlace,
-        abi: theSourceMarketPlace.abi,
+        abi: TheSourceMarketPlace.abi,
         functionName: 'mintArticle',
         args : [article.memberTokenId, article.title, article.description, article.authorName, article.supply, article.price, article.URI],
         overrides: {

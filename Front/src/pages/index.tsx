@@ -31,7 +31,7 @@ function Page() {
             setContracts({...contracts, marketPlace : data.address})
         })()
     },[])
-    console.log(routing)
+    
     return (
         <div className='full'>
             <div className='header'>

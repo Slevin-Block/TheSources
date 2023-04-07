@@ -94,7 +94,7 @@ export default function MintMemberToken() {
                     {newTokenId !== 0 && <ViewToken tokenId={newTokenId} />}
                 </div>
             </div>
-            {!!parseInt(BigNumber.from(numberOfMemberToken).toString()) &&
+            {!!numberOfMemberToken &&
                 <div className={`block ${styles.block}`} >
                     <Gallery />
                 </div>
