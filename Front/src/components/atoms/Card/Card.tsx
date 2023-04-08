@@ -42,7 +42,7 @@ export const Card: FC<Props> = ({ article }) => {
                     <p>Price : {ethers.utils.formatEther(article.price)}</p>
                     <p>Items : {article.supply.toString()}</p>
                 </div>
-                <a href={article.article} target="_blank">Lire l'article</a>
+                <a href={article.article} target="_blank" rel="noreferrer" >read article</a>
             </div>
             {!action && <button className={styles.buy} onClick={() => setAction(true)}><Buy /></button>}
             {(action && !!tokenId && !!unitPrice ) && <Action tokenId={tokenId} unitPrice={unitPrice} setAction={setAction} />}
