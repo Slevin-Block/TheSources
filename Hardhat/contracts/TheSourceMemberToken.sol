@@ -40,10 +40,9 @@ contract TheSourceMemberToken is ERC721URIStorage, Ownable {
     string base;
 
  
-    constructor(address _marketPlaceAddr, uint256 _royalties, string memory baseURI_) ERC721("TheSourceMembreToken", "TSMT") {
+    constructor(address _marketPlaceAddr, uint256 _royalties) ERC721("TheSourceMembreToken", "TSMT") {
         transferOwnership(_marketPlaceAddr);
         royalties = _royalties;
-        base = baseURI_;
         supply = 30;
     }
 

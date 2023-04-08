@@ -13,7 +13,9 @@ import { ContractsState } from '../store/ContractsState'
 import { BlockchainLink } from '../components/atoms/BlockchainLink/BlockchainLink'
 import NewArticle from '../components/blocs/NewArticle/NewArticle'
 import { BuyArticle } from '../components/blocs/BuyArticle/BuyArticle'
-
+import TheSourceMarketPlace from '../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json'
+import { getContract, getProvider } from '@wagmi/core'
+import { useProvider } from 'wagmi'
 
 function Page() {
     const [routing, setRouting] = useRecoilState(RoutingState)
@@ -23,15 +25,26 @@ function Page() {
     /* Routing */
     useEffect(()=>{ (!isRegistred || !contracts.ready) && setRouting('home') }, [isRegistred, contracts.ready])
 
+    const provider = useProvider()
+
     /* Load memberTokenContract */
     useEffect(()=>{
         (async () => {
             const response = await fetch('/api/marketplace', { method: "GET"})
             const data = await response.json()
-            setContracts({...contracts, marketPlace : data.address})
+            /* const contract = getContract({
+                address: data.address,
+                abi: TheSourceMarketPlace.abi,
+                signerOrProvider: provider,
+            })
+            const filter = contract.filters.deploy()
+            console.log("Try to find ...")
+            const res = await contract.queryFilter(filter, 0, 'latest')
+            console.log("Find : ", res) */
+            setContracts({...contracts, marketPlace : data.address, blocknumber : data.blocknumber})
         })()
     },[])
-    
+
     return (
         <div className='full'>
             <div className='header'>

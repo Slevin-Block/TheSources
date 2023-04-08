@@ -39,6 +39,7 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
     uint256 private articlePrice;
 
 /* EVENTS */
+    event deploy(string message);
     event membershipPrice(uint256 newPrice);
     event newMemberToken(uint256 tokenId);
     event newArticlePrice(uint256 newPrice);
@@ -46,7 +47,9 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 
 /* FUNCTION */
 
-    constructor () ReentrancyGuard() {}
+    constructor () ReentrancyGuard() {
+        emit deploy('deployment');
+    }
 
     function init(
         address _memberTokenAddr,

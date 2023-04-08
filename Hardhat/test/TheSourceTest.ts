@@ -53,8 +53,7 @@ describe("TheSource", function () {
         const TheSourceMemberToken = await ethers.getContractFactory("TheSourceMemberToken");
         const theSourceMemberToken: TheSourceMemberToken = await TheSourceMemberToken.deploy(
             theSourceMarketPlace.address,
-            ROYALTIES,
-            BASE_URI_MEMBERTOKEN);
+            ROYALTIES);
         await theSourceMemberToken.deployed();
         return { theSourceMarketPlace, theSourceMemberToken, owner, otherAccount }
     }
@@ -83,8 +82,7 @@ describe("TheSource", function () {
         const TheSourceMemberToken = await ethers.getContractFactory("TheSourceMemberToken");
         const theSourceMemberToken: TheSourceMemberToken = await TheSourceMemberToken.deploy(
             theSourceMarketPlace.address,
-            ROYALTIES,
-            BASE_URI_MEMBERTOKEN);
+            ROYALTIES);
         await theSourceMemberToken.deployed();
 
         // Deploy Article
@@ -104,7 +102,9 @@ describe("TheSource", function () {
                 theSourceArticle.address,
                 MINT_ARTICLE_PRICE
             )
-
+        await theSourceMarketPlace
+            .connect(owner)
+            .setBaseURIMemberToken(BASE_URI_MEMBERTOKEN)
         return { theSourceMarketPlace, theSourceArticle, theSourceMemberToken, owner, otherAccount }
     }
 

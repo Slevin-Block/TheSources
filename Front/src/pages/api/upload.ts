@@ -109,7 +109,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
         try {
             // Send Folder and get back folder CID
             const response = await pinata.pinFromFS(targetPath, folderOptions)
-            const folderCID = `https://gateway.pinata.cloud/ipfs/${response.IpfsHash}`
+            const folderCID = `https://ipfs.io/ipfs/${response.IpfsHash}`
             resultBody = { ...resultBody, cid: folderCID }
 
             // Upgrade Article metadata

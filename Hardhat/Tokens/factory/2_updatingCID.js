@@ -6,9 +6,9 @@ const TAG_CID_PINATA = '#TAGCIDPINATA';
 const TAG_CID_IPFS = '#TAGCIDIPFS';
 const TAG_ADDRESS_MARKETPLACE = '#TAGMARKETPLACE';
 
-const CID_PINATA = 'https://gateway.pinata.cloud/ipfs/QmcLYdsQJCsYC6W6GJfpzPLxPSToG3cotDnktL7xt8Zh8q/';
-const CID_IPFS = 'ipfs://bafybeibfndcyuavtrho7dfuwtzoe4hqhvstspq3eaq77xmbgip7fopquda/';
-const ADDRESS_MARKETPLACE = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const CID_PINATA = 'https://ipfs.io/ipfs/QmcLYdsQJCsYC6W6GJfpzPLxPSToG3cotDnktL7xt8Zh8q/';
+const CID_IPFS = 'ipfs://bafybeigp7taatynbpztnoun6hcepmg6wfjuwluj4ag2672hz2ghgyi3koy/';
+const ADDRESS_MARKETPLACE = '0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf';
 
 // Fonction pour parcourir les fichiers JSON dans un répertoire et les modifier
 function modifyJsonFiles(directoryPath, newCidPinata, newCidIpfs, addressMarketPlace) {

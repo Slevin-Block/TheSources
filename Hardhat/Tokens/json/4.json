@@ -1,1 +1,14 @@
-{"description":"Member Token of TheSource https://the-sources.vercel.app/","image":"https://gateway.pinata.cloud/ipfs/QmcLYdsQJCsYC6W6GJfpzPLxPSToG3cotDnktL7xt8Zh8q/4.png","external_url":"ipfs://bafybeibfndcyuavtrho7dfuwtzoe4hqhvstspq3eaq77xmbgip7fopquda/4.png","name":"MemberToken TheSource","seller_fee_basis_points":250,"fee_recipient":"0x5FbDB2315678afecb367f032d93F642f64180aa3","attributes":[{"trait_type":"tag","value":"M4SmPYP4FgYY"}]}
+{
+    "description": "Member Token of TheSource https://the-sources.vercel.app/",
+    "image": "https://ipfs.io/ipfs/QmcLYdsQJCsYC6W6GJfpzPLxPSToG3cotDnktL7xt8Zh8q/4.png",
+    "external_url": "ipfs://bafybeigp7taatynbpztnoun6hcepmg6wfjuwluj4ag2672hz2ghgyi3koy/4.png",
+    "name": "MemberToken TheSource",
+    "seller_fee_basis_points": 250,
+    "fee_recipient": "0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf",
+    "attributes": [
+        {
+            "trait_type": "tag",
+            "value": "N827PHWOM6nL"
+        }
+    ]
+}

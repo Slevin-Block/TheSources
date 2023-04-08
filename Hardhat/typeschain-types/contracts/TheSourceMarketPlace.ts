@@ -210,6 +210,7 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
     "createArticle(address,uint256,uint256)": EventFragment;
+    "deploy(string)": EventFragment;
     "membershipPrice(uint256)": EventFragment;
     "newArticlePrice(uint256)": EventFragment;
     "newMemberToken(uint256)": EventFragment;
@@ -217,6 +218,7 @@ export interface TheSourceMarketPlaceInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "createArticle"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "deploy"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "membershipPrice"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "newArticlePrice"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "newMemberToken"): EventFragment;
@@ -245,6 +247,13 @@ export type createArticleEvent = TypedEvent<
 >;
 
 export type createArticleEventFilter = TypedEventFilter<createArticleEvent>;
+
+export interface deployEventObject {
+  message: string;
+}
+export type deployEvent = TypedEvent<[string], deployEventObject>;
+
+export type deployEventFilter = TypedEventFilter<deployEvent>;
 
 export interface membershipPriceEventObject {
   newPrice: BigNumber;
@@ -553,6 +562,9 @@ export interface TheSourceMarketPlace extends BaseContract {
       memberTokenId?: null,
       articleId?: null
     ): createArticleEventFilter;
+
+    "deploy(string)"(message?: null): deployEventFilter;
+    deploy(message?: null): deployEventFilter;
 
     "membershipPrice(uint256)"(newPrice?: null): membershipPriceEventFilter;
     membershipPrice(newPrice?: null): membershipPriceEventFilter;

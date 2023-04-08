@@ -16,7 +16,7 @@ export const usePastEvents = (contract: Contract | null, eventName: string, addr
                 (async () => {
                     try {
                         const res = await contract.queryFilter(filter, 0, 'latest')
-                        if (res) {
+                        if (res && res.length > 0) {
                             if (schema.length === 0) {
                                 setEvents(res.map(event => event.args))
                             } else if (res[0].args?.length !== schema.length) {
@@ -31,6 +31,8 @@ export const usePastEvents = (contract: Contract | null, eventName: string, addr
                                     setEvents([])
                                 }
                             }
+                        }else{
+                            setEvents([])
                         }
                     } catch (err) {
                         console.error(err)
@@ -39,6 +41,7 @@ export const usePastEvents = (contract: Contract | null, eventName: string, addr
             } else {
                 console.log("filter invalid")
             }
+        }else{
             console.log("contract invalid")
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

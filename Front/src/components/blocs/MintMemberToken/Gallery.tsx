@@ -25,7 +25,7 @@ export const Gallery : FC<Props>= () => {
         signerOrProvider: provider,
     })
 
-    // For Rerender
+    // To Rerender
     useEffect(() => {  }, [address])
     useContractEvent({
         address: contracts.memberToken,

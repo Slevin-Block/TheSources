@@ -11,7 +11,7 @@ export const ViewToken: FC<Props> = ({tokenId}) => {
 
     const [src, setSrc] = useState<string>("")
     const contracts = useRecoilValue(ContractsState)
-
+    console.log(tokenId)
 // READ THE CURRENT PRICE OF MEMBER TOKEN
     const { data: URI } = useContractRead({
         address: contracts.memberToken, abi: TheSourceMemberToken.abi,
@@ -23,6 +23,7 @@ export const ViewToken: FC<Props> = ({tokenId}) => {
         if (URI){
             (async () => {
                 try{
+                    console.log(URI.toString())
                     const res = await fetch(URI.toString())
                     const data = await res.json()
                     if (data?.image){

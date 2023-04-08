@@ -71,7 +71,11 @@ export const Home: FC<Props> = () => {
 
     return (
         <div className={styles.listing}>
-            {articles.length > 0 && articles.map((article, index) => <Card key={index} article={article}/>)}
+            {articles.length > 0 ?
+                articles.map((article, index) => <Card key={index} article={article}/>)
+            :
+                <p>Any article, please publish one...</p>    
+            }
         </div>
     )
 }
