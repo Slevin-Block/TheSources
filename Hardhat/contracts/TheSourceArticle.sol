@@ -81,9 +81,9 @@ contract TheSourceArticle is ERC1155URIStorage, Ownable {
         return articleId;
     }
 
-    function buyArticle(address _seller, uint256 _articleId, uint256 amount) external {
+    function buyArticle(address _seller, uint256 _articleId, uint256 amount) external onlyOwner{
         (,, address author) = getArticleInfos(_articleId);
-        safeTransferFrom(author, _seller, _articleId, 1, "");
+        safeTransferFrom(author, _seller, _articleId, amount, "");
         articles[_articleId].supply-= amount;
     }
 

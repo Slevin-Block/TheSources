@@ -6,9 +6,12 @@ const TAG_CID_PINATA = '#TAGCIDPINATA';
 const TAG_CID_IPFS = '#TAGCIDIPFS';
 const TAG_ADDRESS_MARKETPLACE = '#TAGMARKETPLACE';
 
-const CID_PINATA = 'https://ipfs.io/ipfs/QmcLYdsQJCsYC6W6GJfpzPLxPSToG3cotDnktL7xt8Zh8q/';
+// TOKENS_IMG CID
+
+const CID = 'QmcLYdsQJCsYC6W6GJfpzPLxPSToG3cotDnktL7xt8Zh8q'
+const CID_PINATA = `https://ipfs.io/ipfs/${CID}/`;
 const CID_IPFS = 'ipfs://bafybeigp7taatynbpztnoun6hcepmg6wfjuwluj4ag2672hz2ghgyi3koy/';
-const ADDRESS_MARKETPLACE = '0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf';
+const ADDRESS_MARKETPLACE = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0';
 
 // Fonction pour parcourir les fichiers JSON dans un répertoire et les modifier
 function modifyJsonFiles(directoryPath, newCidPinata, newCidIpfs, addressMarketPlace) {

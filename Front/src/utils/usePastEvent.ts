@@ -1,9 +1,11 @@
 import { Contract } from "ethers"
 import { useEffect, useState } from "react"
+import { ContractsState } from "../store/ContractsState"
+import { useRecoilValue } from "recoil"
 
 export const usePastEvents = (contract: Contract | null, eventName: string, address :`0x${string}` | undefined, schema: string[] = []) => {
     const [events, setEvents] = useState<any[]>([])
-
+    const {blocknumber} = useRecoilValue(ContractsState)
     useEffect(() => {
         if (contract !== null) {
             let filter
@@ -15,7 +17,7 @@ export const usePastEvents = (contract: Contract | null, eventName: string, addr
             if (filter) {
                 (async () => {
                     try {
-                        const res = await contract.queryFilter(filter, 0, 'latest')
+                        const res = await contract.queryFilter(filter, blocknumber, 'latest')
                         if (res && res.length > 0) {
                             if (schema.length === 0) {
                                 setEvents(res.map(event => event.args))

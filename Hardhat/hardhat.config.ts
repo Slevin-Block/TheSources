@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv'
 import "@typechain/hardhat"
 
 dotenv.config()
-const { MNEMONIC, GOERLIRPC, INFURA_ID, MUMBAIRPC, ALCHEMY_ID, MAIN_ACCOUNT, CLIENT_1_ACCOUNT, CLIENT_2_ACCOUNT, CLIENT_3_ACCOUNT, CLIENT_4_ACCOUNT } = process.env
+const { MNEMONIC, GOERLIRPC, INFURA_ID, MUMBAIRPC, ALCHEMY_ID, MAIN_ACCOUNT, CLIENT_1_ACCOUNT, CLIENT_2_ACCOUNT, CLIENT_3_ACCOUNT, CLIENT_4_ACCOUNT, ETHERSCAN_API_KEY } = process.env
 const accounts = [MAIN_ACCOUNT, CLIENT_1_ACCOUNT, CLIENT_2_ACCOUNT, CLIENT_3_ACCOUNT, CLIENT_4_ACCOUNT]
 let networks = {}
 
@@ -22,6 +22,7 @@ if (INFURA_ID) {
         ...networks,
         goerli: {
             url: `${GOERLIRPC}${INFURA_ID}`,
+            chainId: 5,
             accounts,
         }
     }
@@ -30,7 +31,8 @@ if (ALCHEMY_ID) {
     networks = {
         ...networks,
         mumbai: {
-            url: `${MUMBAIRPC}${ALCHEMY_ID}`,
+            url: `${MUMBAIRPC}`, /* ${ALCHEMY_ID} */
+            chainId : 80001,
             accounts,
         }
     }
@@ -51,6 +53,9 @@ const config: HardhatUserConfig = {
 
     defaultNetwork: "localhost",
     networks,
+    etherscan: {
+        apiKey: ETHERSCAN_API_KEY
+    },
     paths: {
         sources: "./contracts",
         tests: "./test",

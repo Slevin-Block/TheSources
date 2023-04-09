@@ -2,20 +2,41 @@ import { ethers } from "hardhat";
 import { BigNumber } from 'ethers'
 import { TheSourceMarketPlace } from "../typeschain-types";
 
-const URI = 'Qma7GUvATq1jVyGb9Hyu6HP5XbyesqnevcXjgG2iTeZSbF'
+let blocknumber : number | null= null
 
-const BASE_URI_MEMBERTOKEN = `https://ipfs.io/ipfs/${URI}/`
-const initialMarketPlaceAddr = '0x0B306BF915C4d645ff596e518fAf3F9669b97016'
+const URI_METADATA = 'QmctFYiKAVbEXXAAXJ3NbTv5Z2FnrHG8tfBazB7W3Mg7QD'
+const BASE_URI_MEMBERTOKEN = `https://ipfs.io/ipfs/${URI_METADATA}/`
+const initialMarketPlaceAddr = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'
+
+const localTest = true
+const extraGasFee = 1
+const unit = 'gwei'
 
 
 async function main() {
 
-    const [owner, journalist, ...otherAccounts] = await ethers.getSigners();
+    const [owner, ...otherAccounts] = await ethers.getSigners();
 
     const TheSourceMarketPlace = await ethers.getContractFactory("TheSourceMarketPlace");
     let theSourceMarketPlace : TheSourceMarketPlace
     theSourceMarketPlace = TheSourceMarketPlace.attach(initialMarketPlaceAddr);
-    await theSourceMarketPlace.connect(owner).setBaseURIMemberToken(BASE_URI_MEMBERTOKEN)
+
+    console.log("--------- BASE URI ---------")
+    const txBaseUri = await theSourceMarketPlace.connect(owner).setBaseURIMemberToken(BASE_URI_MEMBERTOKEN, {gasPrice: ethers.utils.parseUnits(extraGasFee.toString(), unit)})
+    !localTest && txBaseUri.wait(6)
+    console.log("...done")
+    console.log(" ")
+
+    if (blocknumber !== null){
+        console.log("--------- BLOCKNUMBER ---------")
+        const txBlocknumber = await theSourceMarketPlace.connect(owner).setBlocknumber(blocknumber,
+        {gasPrice: ethers.utils.parseUnits(extraGasFee.toString(), unit)})
+        !localTest && await txBlocknumber.wait(6)
+        console.log("BlockNumber : ", await theSourceMarketPlace.blocknumber())
+        console.log("...done")
+        console.log(" ")
+    }
+
 
     /* Mint un Member Token => pour connaitre sa baseURI */
     /* const MemberTokenPrice = await theSourceMarketPlace.connect(journalist).getMemberTokenPrice()

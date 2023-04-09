@@ -39,7 +39,7 @@
     gap : 1rem;
 }
 
-.buy, .spinnerAction{
+.actionContainer{
     position : absolute;
     bottom : 0.1rem;
     right : 0.1rem;

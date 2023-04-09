@@ -11,6 +11,7 @@ import { Gallery } from './Gallery'
 
 
 export default function MintMemberToken() {
+    const [numberOfTokens, setNumberOfTokens] = useState<number>(0)
     const [price, setPrice] = useState<undefined | string>('')
     const [newTokenId, setNewTokenId] = useState<number>(0)
     const [isUpdating, setIsUpdating] = useState(false)
@@ -67,9 +68,17 @@ export default function MintMemberToken() {
     }, [currentMemberTokenPrice])
 
     useEffect(() => {
-        isUpdating && setIsUpdating(false)
+        if (numberOfMemberToken){
+            const value = parseInt(BigNumber.from(numberOfMemberToken).toString())
+            setNumberOfTokens(value)
+        }
+        if(isUpdating) {
+            setIsUpdating(false)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [numberOfMemberToken])
+
+    console.log(numberOfTokens)
 
     return (
         <>
@@ -78,7 +87,7 @@ export default function MintMemberToken() {
                     <h2>Mint Member Token</h2>
                     <div className={styles.valueBox}>
                         <div>
-                            <p>{!!numberOfMemberToken && `Yours : ${parseInt(BigNumber.from(numberOfMemberToken).toString())}`}</p>
+                            <p>{`Yours : ${numberOfTokens}`}</p>
                             <div className={styles.container} >{isUpdating && <div className='spinner '></div>}</div>
                         </div>
                         <p>{!!price && `${price}${balance?.symbol}`}</p>
@@ -94,7 +103,7 @@ export default function MintMemberToken() {
                     {newTokenId !== 0 && <ViewToken tokenId={newTokenId} />}
                 </div>
             </div>
-            {!!numberOfMemberToken &&
+            {numberOfTokens>0 &&
                 <div className={`block ${styles.block}`} >
                     <Gallery />
                 </div>

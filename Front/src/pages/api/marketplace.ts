@@ -7,7 +7,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     switch (method) {
         case 'GET':
             // @ts-ignore
-            res.send({ address: process.env.MARKETPLACE_ADDRESS, blocknumber : process.env.BLOCKNUMBER})
+            res.send({ address: process.env.MARKETPLACE_ADDRESS})
             break
         default:
             res.setHeader('Allow', ['GET'])

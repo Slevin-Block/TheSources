@@ -50,12 +50,15 @@ export const Home: FC<Props> = () => {
                     const [articles, uris] = await Promise.all([
                         Promise.all(articleIds.map(async (id) => await articleContract.getArticle(id))),
                         Promise.all(articleIds.map(async (id) => await articleContract.uri(id)))
-                            .then(uris =>
-                                Promise.all(uris.map(async (uri) =>
+                            .then(uris =>{
+                                console.log(uris)
+                                return Promise.all(uris.map(async (uri) =>
                                     await fetch(uri)
                                         .then(res => res.json())
-                                )))
+                                ))})
                     ])
+                    /* console.log("ArticleIds : ", articleIds)
+                    console.log("uris : ", uris) */
                     const final = articles
                         .map((article, index) => { return { ...article, id : index+1, cover: uris[index].image, article: `${uris[index].attributes[5].value}/${uris[index].attributes[3].value}` } })
                         .filter(article => article.supply > 0)

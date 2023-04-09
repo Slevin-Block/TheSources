@@ -16,6 +16,7 @@ import "./TheSourceMemberToken.sol";
 import "./TheSourceArticle.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 
 
@@ -33,13 +34,14 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 /* CONTRACTS */
     TheSourceMemberToken public memberTokenContract;
     TheSourceArticle public articleContract;
+    uint256 public blocknumber;
 
 /* STATE */
     uint256 private memberTokenPrice;
     uint256 private articlePrice;
 
 /* EVENTS */
-    event deploy(string message);
+    event deployBlocknumber(uint256 blocknumber);
     event membershipPrice(uint256 newPrice);
     event newMemberToken(uint256 tokenId);
     event newArticlePrice(uint256 newPrice);
@@ -47,9 +49,7 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
 
 /* FUNCTION */
 
-    constructor () ReentrancyGuard() {
-        emit deploy('deployment');
-    }
+    constructor () ReentrancyGuard() {}
 
     function init(
         address _memberTokenAddr,
@@ -61,6 +61,12 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
         memberTokenPrice = _memberTokenPrice;
         articleContract = TheSourceArticle(_articleContract);
         articlePrice = _articlePrice;
+    }
+
+    function setBlocknumber(uint256 _blocknumber) public onlyOwner {
+        require( _blocknumber > 0, "Invalid blocknumber");
+        blocknumber = _blocknumber;
+        emit deployBlocknumber(blocknumber);
     }
     
 
@@ -150,15 +156,20 @@ contract TheSourceMarketPlace is Ownable, ReentrancyGuard {
     function buyArticle(uint256 _articleId, uint256 _amount) public payable returns (bool){
         (uint256 supply, uint256 unitPrice, address author)= articleContract.getArticleInfos(_articleId);
 
-        require(msg.value >= unitPrice * _amount, "Not enough");
+        require(_amount > 0, "Amount haven't be null");
         require(_amount <= supply, "Not enough supply");
+        require(msg.value >= unitPrice * _amount, "Not enough");
         /* Verification of the existence of the index, into above getArticleInfos require */
 
         articleContract.buyArticle(msg.sender, _articleId, _amount);
         uint256 royalties = articleContract.royalties();
-        uint256 ownerFees =  msg.value * royalties / 1000;
-        balances[author] += msg.value - ownerFees;
-        balances[owner()] += ownerFees;
+        if (royalties == 0){
+            balances[author] += msg.value;
+        }else{
+            uint256 ownerFees =  Math.mulDiv(msg.value, royalties, 1000);
+            balances[author] += msg.value - ownerFees;
+            balances[owner()] += ownerFees;
+        }
         return true;
     }
 

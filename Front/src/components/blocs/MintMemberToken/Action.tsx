@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react'
 import { useRecoilValue } from 'recoil';
 import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { ContractsState } from '../../../store/ContractsState';
-import theSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
+import TheSourceMarketPlace from "../../../artifacts/contracts/TheSourceMarketPlace.sol/TheSourceMarketPlace.json"
 import { ethers } from 'ethers';
 interface Props {
     value: string;
@@ -18,7 +18,7 @@ export const Action: FC<Props> = ({ value, disabled, isUpdating, setIsUpdating})
     const { address } = useAccount()
     const { config } = usePrepareContractWrite({
         address: contracts.marketPlace,
-        abi: theSourceMarketPlace.abi,
+        abi: TheSourceMarketPlace.abi,
         functionName: 'buyMemberToken',
         overrides: {
             from: address,
