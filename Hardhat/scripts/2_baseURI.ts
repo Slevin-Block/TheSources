@@ -4,12 +4,12 @@ import { TheSourceMarketPlace } from "../typeschain-types";
 
 let blocknumber : number | null= null
 
-const URI_METADATA = 'QmctFYiKAVbEXXAAXJ3NbTv5Z2FnrHG8tfBazB7W3Mg7QD'
+const URI_METADATA = 'QmTqXYCLE8DU91oSxCu6VnwSxiHbmJrseDSHPHecfQ4qBr'
 const BASE_URI_MEMBERTOKEN = `https://ipfs.io/ipfs/${URI_METADATA}/`
-const initialMarketPlaceAddr = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'
+const initialMarketPlaceAddr = '0x4F7e9F38CE909709a7d1Ee24EcE5BE911C724E69'
 
-const localTest = true
-const extraGasFee = 1
+const localTest = false
+const extraGasFee = 100
 const unit = 'gwei'
 
 

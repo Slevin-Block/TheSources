@@ -37,7 +37,7 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
     const timestamp = Date.now()
     let status = 200;
     let resultBody: Response = { status: 'ok', message: 'Files were uploaded successfully' };
-    const tempDir = '/tmp'; //path.join(process.cwd(), 'temp');
+    const tempDir = '/tmp';
 
     /* Get files using formidable */
     const files = await new Promise<ProcessedFiles | undefined>((resolve, reject) => {
@@ -107,9 +107,14 @@ async function handler(req: NextApiRequest & { session: Session }, res: NextApiR
 
         // Send Folder to Pinata for pinning
         try {
-            // Send Folder and get back folder CID
+            // Send Folder and get back folder CID 
             const response = await pinata.pinFromFS(targetPath, folderOptions)
-            const folderCID = `https://ipfs.io/ipfs/${response.IpfsHash}`
+
+            // Config Base URI
+            let base_uri = process.env.BASE_URI
+            if (!base_uri) base_uri = "https://ipfs.io/ipfs/"
+            if (base_uri.slice(-1) !== '/') base_uri = `${base_uri}/`
+            const folderCID = `${base_uri}${response.IpfsHash}`
             resultBody = { ...resultBody, cid: folderCID }
 
             // Upgrade Article metadata
